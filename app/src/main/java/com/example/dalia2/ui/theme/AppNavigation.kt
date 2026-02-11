@@ -18,7 +18,7 @@ fun AppNavigation() {
         startDestination = "welcomeScreen" // pagina inícial
     ) {
 
-        composable("splash){
+        composable("splash"){
             SplashScreen(
                 navController = navController
             )
@@ -26,8 +26,12 @@ fun AppNavigation() {
 
         composable("welcomeScreen") {
             WelcomeScreen(
-                onLoginClick = navController.navigate("Login")
-                onSignupClick = navController.navigate("signup")
+                onLoginClick = {
+                    navController.navigate("Login")
+                },
+                onSignupClick = {
+                    navController.navigate("signup")
+                }
             )
         }
 
@@ -55,82 +59,109 @@ fun AppNavigation() {
 
         composable ("startQuiz"){
             StartQuizScreen(
-                onNextClick = navController.navigate("quizAge")
+                onNextClick = {
+                    navController.navigate("quizAge")
+                }
             )
         }
 
         composable("quizAge") {
             QuizAgeScreen (
-                onNextClick = navController.navigate("quizMode")
+                onNextClick = {
+                    navController.navigate("quizMode")
+                }
             )
         }
 
         composable("quizMode") {
             QuizModeScreen (
-                onPregnantModeClick = navController.navigate("quizPregnant-1"),
-                onPeriodModeClick = navController.navigate("quizPeriod-1")
+                onPregnantModeClick = {
+                    navController.navigate("quizPregnant-1")
+                },
+                onPeriodModeClick = {
+                    navController.navigate("quizPeriod-1")
+                }
             )
         }
 
         composable("quizPregnant-1") {
             QuizPregnant1Screen (
-                onNextClick = navController.navigate("quizPregnant-2")
+                onNextClick = {
+                    navController.navigate("quizPregnant-2")
+                }
         }
 
         composable("quizPregnant-2") {
             QuizPregnant2Screen (
-                onNextClick = navController.navigate("quizPregnant-3")
+                onNextClick = {
+                    navController.navigate("quizPregnant-3")
+                }
             )
         }
 
         composable("quizPregnant-3") {
             QuizPregnant3Screen (
-                onNextClick = navController.navigate("quizPregnant-4")
+                onNextClick = {
+                    navController.navigate("quizPregnant-4")
+                }
             )
         }
 
         composable("quizPregnant-4") {
             QuizPregnant2Screen(
-                onNextClick = navController.navigate("quizPregnant-5")
+                onNextClick = {
+                    navController.navigate("quizPregnant-5")
+                }
             )
         }
 
         composable("quizPregnant-5") {
             QuizPregnant2Screen(
-                onNextClick = navController.navigate("home")
+                onNextClick = {
+                    navController.navigate("home")
+                }
             )
         }
 
         composable("quizPeriod-1") {
             QuizPeriod1Screen(
-                onNextClick = navController.navigate("quizPeriod-2")
+                onNextClick = {
+                    navController.navigate("quizPeriod-2")
+                }
             )
         }
 
         composable("quizPeriod-2") {
             QuizPeriod2Screen(
-                onNextClick = navController.navigate("quizPeriod-3")
+                onNextClick = {
+                    navController.navigate("quizPeriod-3")
+                }
             )
         }
 
         composable("quizPeriod-3") {
             QuizPeriod3Screen(
-                onNextClick = navController.navigate("quizPeriod-4")
+                onNextClick = {
+                    navController.navigate("quizPeriod-4")
+                }
             )
         }
 
         composable("quizPeriod-4") {
             QuizPeriod4Screen(
-                onNextClick = navController.navigate("quizPeriod-5")
+                onNextClick = {
+                    navController.navigate("quizPeriod-5")
+                }
             )
         }
 
         composable("quizPeriod-5") {
             QuizPeriod5Screen(
-                onNextClick = navController.navigate("home")
+                onNextClick = {
+                    navController.navigate("home")
+                }
             )
         }
-
 
     }
 }

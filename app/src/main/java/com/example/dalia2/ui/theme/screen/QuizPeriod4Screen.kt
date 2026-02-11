@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,27 +22,28 @@ import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
-import com.kizitonwose.calendar.core.CalendarDay
-import com.kizitonwose.calendar.core.DayPosition
-import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.core.*
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.YearMonth
-
 
 @Composable
 fun QuizPeriod4Screen() {
 
-
+    //Variaveis de datas
     val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(12) } // 1 ano atrás
-    val endMonth = remember { currentMonth.plusMonths(3) } // 3 meses à frente
-    val firstDayOfWeek = remember { DayOfWeek.SUNDAY }
+    val startMonth = remember { currentMonth.minusMonths(12) } // Visualização de até 1 ano atrás
+
+    //armazena data selecionada
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+
 
     //Gerenciador a visualização de datas
     val calendarState = rememberCalendarState(
         startMonth = startMonth,
-        endMonth = endMonth,
+        endMonth = currentMonth,
         firstVisibleMonth = currentMonth,
-        firstDayOfWeek = firstDayOfWeekFromLocale()
+        firstDayOfWeek = DayOfWeek.SUNDAY //Faz com que o domingo seja o primiro dia da semana
     )
 
     Column(
@@ -75,15 +77,35 @@ fun QuizPeriod4Screen() {
             state = calendarState,
             dayContent = { day ->
                 Day(
-                    day = day,
-                    isSelected = selections.value == day,
-                    onClick = { selections.value = clickedDay}
+                    day = day, // dia atual
+                    isSelected = selectedDate == day.date, //Confirma a data?? booleano
+                    onClick = {
+                        selectedDate = day.date //adiciona o dia selecionado a selectedDate/Atualiza o estado
+                    }
                 )
-            }
+            },
 
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f) //tamanho do calendario
 
         )
+
+        //Quando a data for selecionada o botão aparece
+        if (selectedDate != null) {
+            Button(
+                onClick = {
+                    saveSelectedDate(selectedDate!!)
+                }, //bota as rotas, o app navigation define e o onclick usa
+                modifier = Modifier
+                    .width(304.dp)
+                    .height(44.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
+                shape = RoundedCornerShape(8.dp)
+
+            ) {
+                Text("Continuar", fontSize = 16.sp)
+            }
+        }
+
     }
 }
 
@@ -93,15 +115,21 @@ fun Day(
     isSelected: Boolean,
     onClick: () -> Unit
 ){
-    Box{
+    Box( //Ambos mudam a cor da data quando selecionada
         modifier = Modifier.background(color = if(isSelected) PinkButton else MaterialTheme.colorScheme.surface)
-    }
-    Text{
+    )
+    Text(
+        text = day.date.dayOfMonth.toString(), //pega o texto do calendario(sem isso não funciona)
         fontSize = 14.sp,
         color = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground
-    }
+    )
 
 
+}
+
+//Função para salvar a data ou colocar no viewModel?????
+fun saveSelectedDate(date: LocalDate){
+    println("Data salva: $date")
 }
 
 @Preview(showBackground = true)
