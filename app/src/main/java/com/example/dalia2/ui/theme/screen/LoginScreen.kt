@@ -1,4 +1,4 @@
-package com.example.dalia2.ui.screen
+package com.example.dalia2.ui.theme.screen
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +26,10 @@ import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit = {},
+    onSignUpClick: () -> Unit = {}
+) {
     // Variáveis para armazenar o que o usuário digita
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -57,15 +60,20 @@ fun LoginScreen() {
             textAlign = TextAlign.Center
         )
 
-        // 3. Subtítulo (TextView)
-        Text(
-            text = "Bem vinda de volta!",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium,
+        // 3. Subtítulo
+        TextButton (
+            onClick = onSignUpClick,
             modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
-        )
+        ) {
+            Text(
+                text = "Não tem conta? Cadastrar",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = PinkButton
+            )
+        }
 
-        // 4. Campo de Email (OutlinedTextField substitui o TextInputLayout)
+        // 4. Campo de Email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -95,7 +103,7 @@ fun LoginScreen() {
         ) {
             Text(
                 text = "Esqueceu a senha?",
-                color = PinkButton, // Sem o "Color()" em volta
+                color = PinkButton,
                 fontSize = 16.sp
             )
         }
@@ -104,7 +112,7 @@ fun LoginScreen() {
 
         // 7. Botão Entrar
         Button(
-            onClick = { /* Logar */ },
+            onClick = onLoginSuccess,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)
@@ -115,16 +123,14 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         // 8. Botões Sociais (Row substitui o LinearLayout horizontal)
-        Row(
+        /*Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SocialButton(R.drawable.facebook)
-            Spacer(modifier = Modifier.width(18.dp))
+            //Modificar
+            Spacer(modifier = Modifier.width(width = 304.dp, height = 44.dp))
             SocialButton(R.drawable.google)
-            Spacer(modifier = Modifier.width(18.dp))
-            SocialButton(R.drawable.instagram)
-        }
+        }*/
     }
 }
 

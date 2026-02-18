@@ -1,4 +1,4 @@
-package com.example.dalia2.ui.screen
+package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

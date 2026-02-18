@@ -23,13 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
-import com.example.dalia2.ui.screen.QuizModeScreen
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 
 @Composable
-fun QuizPregnant1Screen (){
+fun QuizPregnant1Screen (
+    onNextClick: () -> Unit = {}
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +59,7 @@ fun QuizPregnant1Screen (){
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = { /* Logar */ },
+            onClick = onNextClick,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
@@ -67,7 +68,7 @@ fun QuizPregnant1Screen (){
         }
 
         Button(
-            onClick = { /* Logar */ },
+            onClick = onNextClick,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)

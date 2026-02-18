@@ -28,7 +28,9 @@ import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 
 @Composable
-fun QuizPeriod2Screen(){
+fun QuizPeriod2Screen(
+    onNextClick: () -> Unit = {}
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +59,7 @@ fun QuizPeriod2Screen(){
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = { },
+            onClick = onNextClick,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
@@ -66,7 +68,7 @@ fun QuizPeriod2Screen(){
         }
 
         Button(
-            onClick = {  },
+            onClick = onNextClick,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)

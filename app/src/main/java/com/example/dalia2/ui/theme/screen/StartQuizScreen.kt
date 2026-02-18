@@ -35,7 +35,9 @@ import com.example.dalia2.ui.theme.PinkButton
 
 @OptIn(ExperimentalPermissionsApi::class) //Permite utilizar a biblioteca de gerenciamento de permições
 @Composable
-fun  StartQuizScreen (onStartClick: () -> Unit = {}){
+fun  StartQuizScreen (
+    onStartClick: () -> Unit = {}
+){
 
     val foregroundPermissionState = rememberMultiplePermissionsState(
         permissions = listOf(

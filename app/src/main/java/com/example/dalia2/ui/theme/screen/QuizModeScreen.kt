@@ -1,4 +1,4 @@
-package com.example.dalia2.ui.screen
+package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,7 @@ import com.example.dalia2.ui.theme.GrayButton
 fun QuizModeScreen(
     onPregnantModeClick: () -> Unit = {},
     onPeriodModeClick: () -> Unit = {},
-    onBackClick: () -> Unit = {} // Opcional: para voltar
+
 ) {
     Column(
         modifier = Modifier

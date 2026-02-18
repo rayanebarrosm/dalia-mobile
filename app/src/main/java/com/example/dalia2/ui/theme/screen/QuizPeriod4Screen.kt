@@ -28,7 +28,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun QuizPeriod4Screen() {
+fun QuizPeriod4Screen(
+    onNextClick: () -> Unit = {}
+) {
 
     //Variaveis de datas
     val currentMonth = remember { YearMonth.now() }
@@ -93,7 +95,8 @@ fun QuizPeriod4Screen() {
         if (selectedDate != null) {
             Button(
                 onClick = {
-                    saveSelectedDate(selectedDate!!)
+                    saveSelectedDate(selectedDate!!),
+                    onNextClick
                 }, //bota as rotas, o app navigation define e o onclick usa
                 modifier = Modifier
                     .width(304.dp)

@@ -4,10 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dalia2.ui.screen.LoginScreen
-import com.example.dalia2.ui.screen.QuizAgeScreen
-import com.example.dalia2.ui.screen.QuizModeScreen
-import com.example.dalia2.ui.screen.SignupScreen
+import com.example.dalia2.ui.theme.screen.*
 
 @Composable
 fun AppNavigation() {
@@ -18,7 +15,7 @@ fun AppNavigation() {
         startDestination = "welcomeScreen" // pagina inícial
     ) {
 
-        composable("splash"){
+        composable("splashscreen"){
             SplashScreen(
                 navController = navController
             )
@@ -37,7 +34,7 @@ fun AppNavigation() {
 
         composable("login") {
             LoginScreen(
-                onLoginSucess = {
+                onLoginSuccess = {
                     navController.navigate("home")
                 },
                 onSignUpClick = {
@@ -59,7 +56,7 @@ fun AppNavigation() {
 
         composable ("startQuiz"){
             StartQuizScreen(
-                onNextClick = {
+                onStartClick = {
                     navController.navigate("quizAge")
                 }
             )
@@ -89,6 +86,7 @@ fun AppNavigation() {
                 onNextClick = {
                     navController.navigate("quizPregnant-2")
                 }
+            )
         }
 
         composable("quizPregnant-2") {
@@ -108,7 +106,7 @@ fun AppNavigation() {
         }
 
         composable("quizPregnant-4") {
-            QuizPregnant2Screen(
+            QuizPregnant4Screen(
                 onNextClick = {
                     navController.navigate("quizPregnant-5")
                 }
@@ -116,7 +114,7 @@ fun AppNavigation() {
         }
 
         composable("quizPregnant-5") {
-            QuizPregnant2Screen(
+            QuizPregnant5Screen(
                 onNextClick = {
                     navController.navigate("home")
                 }
