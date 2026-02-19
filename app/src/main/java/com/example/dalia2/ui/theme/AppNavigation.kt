@@ -15,16 +15,10 @@ fun AppNavigation() {
         startDestination = "welcomeScreen" // pagina inícial
     ) {
 
-        composable("splashscreen"){
-            SplashScreen(
-                navController = navController
-            )
-        }
-
         composable("welcomeScreen") {
             WelcomeScreen(
                 onLoginClick = {
-                    navController.navigate("Login")
+                    navController.navigate("login")
                 },
                 onSignupClick = {
                     navController.navigate("signup")
