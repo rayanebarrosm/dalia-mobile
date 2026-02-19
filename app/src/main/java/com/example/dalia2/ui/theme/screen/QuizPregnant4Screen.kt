@@ -98,7 +98,7 @@ fun QuizPregnant4Screen(
             value = weeks,
             onValueChange = {
                 if (it.length <= 2 && (it.isEmpty() || it.all { char -> char.isDigit() })) {
-                    month = it
+                    weeks = it
                 }
             },
             label = { Text("Semana (0-40)") },
@@ -114,16 +114,16 @@ fun QuizPregnant4Screen(
                     val weeksInt = weeks.toInt()
                     onNextClick(monthInt, weeksInt)
                 }
-            },            modifier = Modifier
+            },
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(44.dp),
-        ){
+        ) {
             Image(
-                painter = painterResource(id = R.drawable.button_nextpage), // Sua imagem de seta
+                painter = painterResource(id = R.drawable.button_nextpage),
                 contentDescription = "Próximo",
             )
         }
-
 
     }
 }

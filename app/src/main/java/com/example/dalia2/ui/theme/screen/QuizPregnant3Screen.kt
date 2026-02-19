@@ -98,7 +98,7 @@ fun QuizPregnant3Screen(
             value = weeks,
             onValueChange = {
                 if (it.length <= 2 && (it.isEmpty() || it.all { char -> char.isDigit() })) {
-                    month = it
+                    weeks = it
                 }
             },
             label = { Text("Semana (0-40)") },

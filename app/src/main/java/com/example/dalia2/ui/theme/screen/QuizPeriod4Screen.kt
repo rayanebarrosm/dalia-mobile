@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -95,7 +94,7 @@ fun QuizPeriod4Screen(
         if (selectedDate != null) {
             Button(
                 onClick = {
-                    saveSelectedDate(selectedDate!!),
+                    saveSelectedDate(selectedDate!!)
                     onNextClick
                 }, //bota as rotas, o app navigation define e o onclick usa
                 modifier = Modifier
@@ -119,7 +118,10 @@ fun Day(
     onClick: () -> Unit
 ){
     Box( //Ambos mudam a cor da data quando selecionada
-        modifier = Modifier.background(color = if(isSelected) PinkButton else MaterialTheme.colorScheme.surface)
+        modifier = Modifier
+            .size(30.dp)
+            .background(color = if(isSelected) PinkButton else MaterialTheme.colorScheme.surface)
+            .clickable(onClick = onClick),
     )
     Text(
         text = day.date.dayOfMonth.toString(), //pega o texto do calendario(sem isso não funciona)

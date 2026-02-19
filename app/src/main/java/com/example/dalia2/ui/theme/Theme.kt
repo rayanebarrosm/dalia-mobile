@@ -55,6 +55,3 @@ fun Dalia2Theme(
     )
 }
 
-<style name="Theme.App.Starting" parent="Theme.SplashScreen">
-    <item name="SplashScreenBackground">#FFFFFF</item> <item name="windowSplashScreenAnimatedIcon">@drawable/seu_logo</item> <item name="postSplashScreenTheme">@style/Theme.SeuTemaPrincipalDoCompose</item>
-</style>

@@ -6,12 +6,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dalia2.ui.theme.screen.*
 
+// implementar viewModel para o salvamento no banco de dados
 fun saveData(month: Int, weeks: Int) {
     println("📊 Dados salvos - Mês: $month, Semanas: $weeks")
-    // implementar viewModel para o salvamento no banco de dados
+
 }
-fun saveMedicationData(takesMedication: Boolean) {
-    println("💊 Toma remédios controlados: ${if (takesMedication) "Sim" else "Não"}")
+fun saveFactor(factor: String) {
+  println("Fator escolhido: $factor")
 }
 
 @Composable
@@ -160,7 +161,7 @@ fun AppNavigation() {
         composable("quizPeriod-5") {
             QuizPeriod5Screen(
                 onNextClick = {
-                    resposta -> saveMedicationData(resposta)
+                    factor -> saveFactor(factor)
                     navController.navigate("home")
                 }
             )
