@@ -54,6 +54,7 @@ dependencies {
     implementation("com.kizitonwose.calendar:compose:2.5.0")
     testImplementation(libs.junit)
     implementation("com.google.accompanist:accompanist-permissions:0.37.3") // gerenciador de permissões
+    implementation ("androidx.core:core-splashscreen:1.0.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

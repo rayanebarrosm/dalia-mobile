@@ -36,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun Dalia2Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Deixei false para focar nas suas cores personalizadas
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -54,3 +54,7 @@ fun Dalia2Theme(
         content = content
     )
 }
+
+<style name="Theme.App.Starting" parent="Theme.SplashScreen">
+    <item name="SplashScreenBackground">#FFFFFF</item> <item name="windowSplashScreenAnimatedIcon">@drawable/seu_logo</item> <item name="postSplashScreenTheme">@style/Theme.SeuTemaPrincipalDoCompose</item>
+</style>
