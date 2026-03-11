@@ -1,6 +1,7 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,10 +36,9 @@ fun QuizPregnant5Screen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(80.dp))
-
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
@@ -66,6 +66,8 @@ fun QuizPregnant5Screen(
         ) {
             Text("Sim", fontSize = 16.sp)
         }
+
+        Spacer(modifier = Modifier.height(25.dp))
 
         Button(
             onClick = {onNextClick(false)},

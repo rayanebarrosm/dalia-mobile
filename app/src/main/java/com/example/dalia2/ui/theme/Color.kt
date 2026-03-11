@@ -5,5 +5,7 @@ import androidx.compose.ui.graphics.Color
 val PinkButton = Color(0xFFF6ADD5)
 val GrayButton = Color(0xFFA7A2A3)
 val purple = Color(0xFFD6BFF3)
+
+val green = Color(0xFFB5DBD3)
 val Black = Color(0xFF000000)
 val White = Color(0xFFFFFFFF)

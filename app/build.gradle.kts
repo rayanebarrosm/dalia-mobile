@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
     implementation("com.kizitonwose.calendar:compose:2.5.0")
+    implementation(libs.androidx.compose.ui.text)
     testImplementation(libs.junit)
     implementation("com.google.accompanist:accompanist-permissions:0.37.3") // gerenciador de permissões
     implementation ("androidx.core:core-splashscreen:1.0.0")

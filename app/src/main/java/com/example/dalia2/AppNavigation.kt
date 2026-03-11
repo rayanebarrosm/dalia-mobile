@@ -1,14 +1,18 @@
 package com.example.dalia2
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
 
 // implementar viewModel para o salvamento no banco de dados
 fun saveData(month: Int, weeks: Int) {
-    println("📊 Dados salvos - Mês: $month, Semanas: $weeks")
+    println(" Dados salvos - Mês: $month, Semanas: $weeks")
 
 }
 fun saveFactor(factor: String) {
@@ -19,9 +23,23 @@ fun saveFactor(factor: String) {
 fun AppNavigation() {
     val navController = rememberNavController()
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    // Lista de rotas onde a barra deve aparecer
+    val bottomBarRoutes = listOf("home", "calendar", "bot", "forum", "settings")
+
+    Scaffold(
+        bottomBar = {
+            if (currentRoute in bottomBarRoutes) {
+                BottomNavigationBar(navController)
+            }
+        }
+    ) { paddingValues ->
     NavHost(
         navController = navController,
         startDestination = "welcomeScreen" // pagina inícial
+
     ) {
 
         composable("welcomeScreen") {
@@ -57,7 +75,7 @@ fun AppNavigation() {
             )
         }
 
-        composable ("startQuiz"){
+        composable("startQuiz") {
             StartQuizScreen(
                 onStartClick = {
                     navController.navigate("quizAge")
@@ -66,7 +84,7 @@ fun AppNavigation() {
         }
 
         composable("quizAge") {
-            QuizAgeScreen (
+            QuizAgeScreen(
                 onNextClick = {
                     navController.navigate("quizMode")
                 }
@@ -74,7 +92,7 @@ fun AppNavigation() {
         }
 
         composable("quizMode") {
-            QuizModeScreen (
+            QuizModeScreen(
                 onPregnantModeClick = {
                     navController.navigate("quizPregnant-1")
                 },
@@ -85,7 +103,7 @@ fun AppNavigation() {
         }
 
         composable("quizPregnant-1") {
-            QuizPregnant1Screen (
+            QuizPregnant1Screen(
                 onNextClick = {
                     navController.navigate("quizPregnant-2")
                 }
@@ -93,7 +111,7 @@ fun AppNavigation() {
         }
 
         composable("quizPregnant-2") {
-            QuizPregnant2Screen (
+            QuizPregnant2Screen(
                 onNextClick = {
                     navController.navigate("quizPregnant-3")
                 }
@@ -101,9 +119,9 @@ fun AppNavigation() {
         }
 
         composable("quizPregnant-3") {
-            QuizPregnant3Screen (
-                onNextClick = {
-                    months, weeks -> saveData(months, weeks)
+            QuizPregnant3Screen(
+                onNextClick = { months, weeks ->
+                    saveData(months, weeks)
                     navController.navigate("quizPregnant-4")
                 }
             )
@@ -111,8 +129,8 @@ fun AppNavigation() {
 
         composable("quizPregnant-4") {
             QuizPregnant4Screen(
-                onNextClick = {
-                    months, weeks -> saveData(months, weeks)
+                onNextClick = { months, weeks ->
+                    saveData(months, weeks)
                     navController.navigate("quizPregnant-5")
                 }
             )
@@ -160,12 +178,30 @@ fun AppNavigation() {
 
         composable("quizPeriod-5") {
             QuizPeriod5Screen(
-                onNextClick = {
-                    factor -> saveFactor(factor)
+                onNextClick = { factor ->
+                    saveFactor(factor)
                     navController.navigate("home")
                 }
             )
         }
 
+
+        composable("home") {
+            HomeScreen()
+        }
+        composable("calendar") {
+            CalendarScreen()
+        }
+        composable("bot") {
+            DaliaBotScreen()
+        }
+        composable("forum") {
+            ForumScreen()
+        }
+        composable("settings") {
+            ProfileScreen()
+        }
+
+    }
     }
 }
