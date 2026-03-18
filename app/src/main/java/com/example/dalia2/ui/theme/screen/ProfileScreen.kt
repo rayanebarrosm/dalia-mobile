@@ -1,10 +1,285 @@
 package com.example.dalia2.ui.theme.screen
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.dalia2.R
+import com.example.dalia2.ui.theme.Dalia2Theme
+import com.example.dalia2.ui.theme.GrayButton
+import com.example.dalia2.ui.theme.PinkButton
+import com.example.dalia2.ui.theme.LightPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFD286C9),
+                            Color(0xFFF8ADCD),
+                            Color(0xFFF18FB8)
+                        )
+                    )
+                )
+        ) {
 
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text("Perfil");
+
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.perfil),
+                        contentDescription = "Foto de perfil",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.9f)
+                    )
+                ) {
+                    Column {
+
+                        Row (
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text(text = "Informações");
+
+                            Button(
+                                onClick = { /* tela activity*/ },
+                                colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
+                            ) {
+                                Text("Editar", color = Color.Black)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(3.dp))
+
+                        InfoSection(
+                            label = "Nome",
+                            value = "ee"//state.name//dado do banco
+                        );
+
+                        InfoSection(
+                            label = "Email",
+                            value = "ee@gmail.com"//state.email//dado do banco de dados
+                        );
+
+                        InfoSection(
+                            label = "Idade",
+                            value = "19"//state.age//dado do banco de dados
+                        );
+
+
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Seção de configurações
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        SettingsButton (
+                            text = "Idioma",
+                            icon = R.drawable.idioma_icon,
+                            onClick = { /* Mudar idioma */ },
+                            backgroundColor = LightPink
+                        )
+
+                        SettingsButton (
+                            text = "Informações pessoais",
+                            icon = R.drawable.person,
+                            onClick = { /* Ver planos */ },
+                            backgroundColor = LightPink
+
+                        )
+
+                        SettingsButton(
+                            text = "Planos de pagamento",
+                            icon = R.drawable.cifrao_icon,
+                            onClick = { /* Ver planos */ },
+                            backgroundColor = LightPink
+
+                        )
+
+                        SettingsButton (
+                            text = "Ajuda",
+                            icon = R.drawable.search_icon,
+                            onClick = { /* Ajuda */ },
+                            backgroundColor = LightPink
+                        )
+
+                        Button(
+                            onClick = { },
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                            containerColor = PinkButton
+                            )
+                        ){
+                            Text("Mudar para modo gravidez")
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Zona de alerta
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Zona de perigo",
+                            fontSize = 20.sp
+                        )
+
+                        SettingsButton(
+                            text = "Denunciar",
+                            icon = R.drawable.alert,
+                            backgroundColor = PinkButton,
+                            onClick = { /* Denunciar */ },
+                        )
+
+                        Button(
+                            onClick = { /* Excluir conta */ },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = PinkButton
+                            )
+                        ) {
+                            Text("Excluir conta")
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoSection(
+    label: String,
+    value: String
+){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 20.sp,
+            color = GrayButton,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = value,
+            fontSize = 20.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun SettingsButton(
+    text: String,
+    icon: Int,
+    onClick: () -> Unit,
+    textColor: Color = Color.Black,
+    backgroundColor: Color = Color.Transparent
+){
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor
+        ),
+        elevation = ButtonDefaults.buttonElevation(0.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = text,
+                color = textColor,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    Dalia2Theme {
+        ProfileScreen()
+    }
 }
