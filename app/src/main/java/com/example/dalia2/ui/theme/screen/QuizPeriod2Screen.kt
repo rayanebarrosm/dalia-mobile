@@ -1,6 +1,7 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +36,8 @@ fun QuizPeriod2Screen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
@@ -50,7 +52,7 @@ fun QuizPeriod2Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Text(
-            text = "Já começou o pré-natal?",
+            text = "Você usa métodos contraceptivos?",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground
@@ -66,6 +68,8 @@ fun QuizPeriod2Screen(
         ) {
             Text("Sim", fontSize = 16.sp)
         }
+
+        Spacer(modifier = Modifier.height(25.dp))
 
         Button(
             onClick = onNextClick,

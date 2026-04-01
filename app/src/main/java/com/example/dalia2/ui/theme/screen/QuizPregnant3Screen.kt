@@ -29,13 +29,6 @@ fun QuizPregnant3Screen(
     var weeksError by remember { mutableStateOf<String?>(null) }
 
         fun validateInputs(): Boolean{
-            val monthInt = month.toIntOrNull()
-            monthError = when{
-                month.isEmpty() -> "Mês é obrigatório"
-                monthInt !in 1..9 -> "Mês deve ser entre 1 e 9"
-                else -> null
-            }
-
             val weeksInt = weeks.toIntOrNull()
             weeksError = when {
                 weeks.isEmpty() -> "Semana é obrigatório"
@@ -83,19 +76,6 @@ fun QuizPregnant3Screen(
         )
 
         OutlinedTextField(
-            value = month,
-            onValueChange = {
-                if (it.length <= 2 && (it.isEmpty() || it.all { char -> char.isDigit() })) {
-                    month = it
-                }
-            },
-            label = { Text("Mês") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), //Abre teclado numérico
-            singleLine = true
-        )
-
-        OutlinedTextField(
             value = weeks,
             onValueChange = {
                 if (it.length <= 2 && (it.isEmpty() || it.all { char -> char.isDigit() })) {
@@ -120,8 +100,8 @@ fun QuizPregnant3Screen(
                 .height(44.dp),
         ){
             Image(
-                painter = painterResource(id = R.drawable.button_nextpage), // Sua imagem de seta
-                contentDescription = "Próximo",
+                painter = painterResource(id = R.drawable.button_nextpage),
+                contentDescription = "Próxima página",
             )
         }
 

@@ -32,7 +32,8 @@ fun QuizAgeScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         // O ImageView com bias 0.186 no XML é simulado com um Spacer flexível ou fixo
         Spacer(modifier = Modifier.height(80.dp))

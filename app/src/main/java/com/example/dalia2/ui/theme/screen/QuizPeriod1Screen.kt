@@ -1,6 +1,7 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +36,8 @@ fun QuizPeriod1Screen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
@@ -50,9 +52,18 @@ fun QuizPeriod1Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Text(
-            text = "Já começou o pré-natal?",
+            text = "Previsível ou com variações?",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Nos diga se seu ciclo é regular",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -67,6 +78,8 @@ fun QuizPeriod1Screen(
             Text("Sim", fontSize = 16.sp)
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             onClick = onNextClick,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
@@ -75,6 +88,8 @@ fun QuizPeriod1Screen(
         ) {
             Text("Não", fontSize = 16.sp)
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = onNextClick,

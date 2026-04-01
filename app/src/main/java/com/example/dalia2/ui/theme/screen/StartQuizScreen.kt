@@ -7,6 +7,7 @@ import com.google.accompanist.permissions.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,7 +55,8 @@ fun  StartQuizScreen (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
 
             Spacer(modifier = Modifier.height(80.dp)) // Aproximação do vertical_bias
@@ -77,6 +79,9 @@ fun  StartQuizScreen (
                 modifier = Modifier.fillMaxWidth()
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+
             Text(
                 text = "Para continuar responda uma breve pesquisa para sabermos seu perfil",
                 fontSize = 18.sp,
@@ -85,6 +90,8 @@ fun  StartQuizScreen (
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
@@ -115,7 +122,7 @@ fun  StartQuizScreen (
                 AlertDialog(
                     onDismissRequest = { },
                     title = { Text("Acesso à Localização") },
-                    text = { Text("Este app precisa da sua localização o tempo todo para [insira aqui o motivo real, ex: rastrear sua caminhada]. Por favor, selecione 'Permitir o tempo todo' nas configurações.") },
+                    text = { Text("Este app precisa da sua localização o tempo todo para te rastrear caso voce esteja em perigo. Por favor, selecione 'Permitir o tempo todo' nas configurações.") },
                     confirmButton = {
                         TextButton(onClick = {
                             if (!foregroundPermissionState.allPermissionsGranted) {

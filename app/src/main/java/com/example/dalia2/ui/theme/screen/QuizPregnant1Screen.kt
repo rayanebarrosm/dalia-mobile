@@ -1,6 +1,7 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +37,8 @@ fun QuizPregnant1Screen (
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
@@ -53,7 +56,8 @@ fun QuizPregnant1Screen (
             text = "Em qual desses você se encaixa melhor?",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -64,8 +68,11 @@ fun QuizPregnant1Screen (
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Gostaria de engravidar", fontSize = 16.sp)
+            Text("Gostaria de engravidar",fontSize = 16.sp)
+
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = onNextClick,

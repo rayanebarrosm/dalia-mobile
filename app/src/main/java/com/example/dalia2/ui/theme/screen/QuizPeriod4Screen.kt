@@ -85,7 +85,13 @@ fun QuizPeriod4Screen(
                     }
                 )
             },
-
+            monthHeader = { month ->
+                Text(
+                    text = "${month.yearMonth.month} ${month.yearMonth.year}",
+                    modifier = Modifier.padding(16.dp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
             modifier = Modifier.weight(1f) //tamanho do calendario
 
         )
@@ -95,7 +101,7 @@ fun QuizPeriod4Screen(
             Button(
                 onClick = {
                     saveSelectedDate(selectedDate!!)
-                    onNextClick
+                    onNextClick()
                 }, //bota as rotas, o app navigation define e o onclick usa
                 modifier = Modifier
                     .width(304.dp)
@@ -116,26 +122,37 @@ fun Day(
     day: CalendarDay,
     isSelected: Boolean,
     onClick: () -> Unit
-){
-    Box( //Ambos mudam a cor da data quando selecionada
+) {
+    Box(
         modifier = Modifier
-            .size(30.dp)
-            .background(color = if(isSelected) PinkButton else MaterialTheme.colorScheme.surface)
-            .clickable(onClick = onClick),
-    )
-    Text(
-        text = day.date.dayOfMonth.toString(), //pega o texto do calendario(sem isso não funciona)
-        fontSize = 14.sp,
-        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground
-    )
-
-
+            .aspectRatio(1f) // Quadrado perfeito baseado na largura da coluna
+            .padding(2.dp)   // Pequeno espaço entre os dias
+            .background(
+                color = if (isSelected) PinkButton else Color.Transparent,
+                shape = RoundedCornerShape(8.dp) // Ou CircleShape para ficar redondo
+            )
+            .clickable(
+                enabled = day.position == DayPosition.MonthDate, // Só clica em dias do mês atual
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center // Centraliza o número no quadrado
+    ) {
+        Text(
+            text = day.date.dayOfMonth.toString(),
+            fontSize = 14.sp,
+            // Esmaece dias que não são do mês atual (opcional, mas fica profissional)
+            color = if (isSelected) Color.White
+            else if (day.position == DayPosition.MonthDate) MaterialTheme.colorScheme.onBackground
+            else Color.LightGray
+        )
+    }
 }
 
 //Função para salvar a data ou colocar no viewModel?????
 fun saveSelectedDate(date: LocalDate){
     println("Data salva: $date")
 }
+
 
 @Preview(showBackground = true)
 @Composable

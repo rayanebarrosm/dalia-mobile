@@ -27,7 +27,8 @@ fun QuizModeScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         // 1. LOGO - Posicionada com bias 0.186 (18.6% do topo)
         Spacer(modifier = Modifier.height(80.dp)) // Aproximação do vertical_bias
