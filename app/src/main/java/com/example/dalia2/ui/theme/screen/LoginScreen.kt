@@ -149,6 +149,7 @@ fun SocialButton(iconRes: Int) {
         )
     }
 }
+
 // 2. A função de PREVIEW (é isso que faz a mágica aparecer no Android Studio)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

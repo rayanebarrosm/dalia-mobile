@@ -275,11 +275,3 @@ fun SettingsButton(
     }
 
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    Dalia2Theme {
-        ProfileScreen()
-    }
-}
