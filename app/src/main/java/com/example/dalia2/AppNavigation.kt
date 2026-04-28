@@ -67,11 +67,20 @@ fun AppNavigation() {
         composable("signup") {
             SignupScreen(
                 onSignUpSuccess = {
-                    navController.navigate("startQuiz") // vai para o quiz
+                    navController.navigate("verification") // vai para o quiz
                 },
                 onLoginClick = {
                     navController.navigate("login") // Navega para login
                 }
+            )
+        }
+
+        composable("verification") {
+            VerificationScreen(
+                onVerificationSucess = {
+                    navController.navigate("startQuiz")
+                }
+
             )
         }
 

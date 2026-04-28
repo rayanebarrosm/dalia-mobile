@@ -23,11 +23,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.PinkButton
 
+@Preview
 @Composable
 fun QuizRegisterScreen (
     onNextClick: () -> Unit = {}
@@ -59,102 +61,5 @@ fun QuizRegisterScreen (
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
-
-        Box(
-            modifier = Modifier
-                .aspectRatio(1f) // Quadrado perfeito baseado na largura da coluna
-                .padding(2.dp)   // Pequeno espaço entre os dias
-                .background(
-                    shape = RoundedCornerShape(8.dp) // Ou CircleShape para ficar redondo
-        ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_happy),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_great),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_neutral),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_grimace),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_upset),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_sad),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_surprised),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.rg_fallinglove),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .size(154.dp, 147.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-         }
-
-        Box(
-              modifier = Modifier
-                .aspectRatio(1f) // Quadrado perfeito baseado na largura da coluna
-                .padding(2.dp)   // Pequeno espaço entre os dias
-                .background(
-                    shape = RoundedCornerShape(8.dp) // Ou CircleShape para ficar redondo
-        ) {
-
-
-
-        }
-
-        Box()
-
-        Box()
-
-        Box()
-
-        Button() {
-
-        }
     }
 }
