@@ -1,9 +1,11 @@
 package com.example.dalia2.ui.theme.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,194 +24,233 @@ import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
+import com.example.dalia2.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen() {
+
+    var showDialog by remember { mutableStateOf(false) }
+    var isPregnancyMode by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
     Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFD286C9),
-                            Color(0xFFF8ADCD),
-                            Color(0xFFF18FB8)
-                        )
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFD286C9),
+                        Color(0xFFF8ADCD),
+                        Color(0xFFF18FB8)
                     )
                 )
+            )
+    ) {
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text("Perfil", fontWeight = FontWeight.SemiBold,);
 
-            Column(
-                modifier = Modifier.fillMaxSize()
+            Spacer(modifier = Modifier.height(20.dp))
+
+            //Imagem do perfil
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
             ) {
-                Text("Perfil");
-
-                Box(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.perfil),
-                        contentDescription = "Foto de perfil",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.9f)
-                    )
-                ) {
-                    Column {
-
-                        Row (
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Text(text = "Informações");
-
-                            Button(
-                                onClick = { /* tela activity*/ },
-                                colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
-                            ) {
-                                Text("Editar", color = Color.Black)
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(3.dp))
-
-                        InfoSection(
-                            label = "Nome",
-                            value = "ee"//state.name//dado do banco
-                        );
-
-                        InfoSection(
-                            label = "Email",
-                            value = "ee@gmail.com"//state.email//dado do banco de dados
-                        );
-
-                        InfoSection(
-                            label = "Idade",
-                            value = "19"//state.age//dado do banco de dados
-                        );
-
-
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                //Seção de configurações
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        SettingsButton (
-                            text = "Idioma",
-                            icon = R.drawable.idioma_icon,
-                            onClick = { /* Mudar idioma */ },
-                            backgroundColor = LightPink
-                        )
-
-                        SettingsButton (
-                            text = "Informações pessoais",
-                            icon = R.drawable.person,
-                            onClick = { /* Ver planos */ },
-                            backgroundColor = LightPink
-
-                        )
-
-                        SettingsButton(
-                            text = "Planos de pagamento",
-                            icon = R.drawable.cifrao_icon,
-                            onClick = { /* Ver planos */ },
-                            backgroundColor = LightPink
-
-                        )
-
-                        SettingsButton (
-                            text = "Ajuda",
-                            icon = R.drawable.search_icon,
-                            onClick = { /* Ajuda */ },
-                            backgroundColor = LightPink
-                        )
-
-                        Button(
-                            onClick = { },
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            colors = ButtonDefaults.buttonColors(
-                            containerColor = PinkButton
-                            )
-                        ){
-                            Text("Mudar para modo gravidez")
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                //Zona de alerta
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Zona de perigo",
-                            fontSize = 20.sp
-                        )
-
-                        SettingsButton(
-                            text = "Denunciar",
-                            icon = R.drawable.alert,
-                            backgroundColor = PinkButton,
-                            onClick = { /* Denunciar */ },
-                        )
-
-                        Button(
-                            onClick = { /* Excluir conta */ },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = PinkButton
-                            )
-                        ) {
-                            Text("Excluir conta")
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.perfil),
+                    contentDescription = "Foto de perfil",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+
+            ) {
+                Column() {
+
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(text = "Informações");
+
+                        Button(
+                            onClick = { /* tela activity*/ },
+                            colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
+                        ) {
+                            Text("Editar", color = Color.Black)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    InfoSection(
+                        label = "Nome",
+                        value = "ee"//state.name//dado do banco
+                    );
+
+                    InfoSection(
+                        label = "Email",
+                        value = "ee@gmail.com"//state.email//dado do banco de dados
+                    );
+
+                    InfoSection(
+                        label = "Idade",
+                        value = "19"//state.age//dado do banco de dados
+                    );
+
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            //Seção de configurações
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    SettingsButton (
+                        text = "Idioma",
+                        icon = R.drawable.idioma_icon,
+                        onClick = { /* Mudar idioma */ },
+                        backgroundColor = LightPink
+                    )
+
+                    SettingsButton (
+                        text = "Informações pessoais",
+                        icon = R.drawable.person,
+                        onClick = { /* Ver planos */ },
+                        backgroundColor = LightPink
+
+                    )
+
+                    SettingsButton(
+                        text = "Planos de pagamento",
+                        icon = R.drawable.cifrao_icon,
+                        onClick = { /* Ver planos */ },
+                        backgroundColor = LightPink
+
+                    )
+
+                    SettingsButton (
+                        text = "Ajuda",
+                        icon = R.drawable.search_icon,
+                        onClick = { /* Ajuda */ },
+                        backgroundColor = LightPink
+                    )
+
+                    Button(
+                        onClick = { },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PinkButton
+                        )
+                    ){
+                        Text("Mudar para modo gravidez")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            //Zona de alerta
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors( containerColor = Color.White)
+
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Zona de perigo",
+                        fontSize = 20.sp
+                    )
+
+                    SettingsButton(
+                        text = "Denunciar",
+                        icon = R.drawable.alert,
+                        backgroundColor = PinkButton,
+                        onClick = { /* Denunciar */ },
+                    )
+
+                    Button(
+                        onClick = { /* Excluir conta */ },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors( containerColor = PinkButton)
+                    ) {
+                        Text("Excluir conta")
+                    }
+                }
+            }
+
+            //Pop-up
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    icon = {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isPregnancyMode) R.drawable.pop_heartcalendar else R.drawable.pop_pregnance
+                            ),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(64.dp)
+                        )
+                    },
+                    title = { Text("Atenção") },
+                    text = {
+                        Text("Você está prestes a mudar para o modo ${if (isPregnancyMode) "menstruação" else "gravidez"}!")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            isPregnancyMode = !isPregnancyMode
+                            showDialog = false
+                            // Adicione aqui a navegação se necessário
+                        }) {
+                            Text("Confirmar", color = PinkButton, fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDialog = false }) {
+                            Text("Cancelar", color = Color.Gray)
+                        }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
+
 
 @Composable
 fun InfoSection(
@@ -274,4 +315,12 @@ fun SettingsButton(
         }
     }
 
+}
+
+@Preview()
+@Composable
+fun ProfileScreenPreview() {
+    Dalia2Theme {
+        ProfileScreen()
+    }
 }

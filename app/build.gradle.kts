@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material-icons-extended:1.7.0")
     testImplementation(libs.junit)
     implementation("com.google.accompanist:accompanist-permissions:0.37.3") // gerenciador de permissões
     implementation ("androidx.core:core-splashscreen:1.0.0")

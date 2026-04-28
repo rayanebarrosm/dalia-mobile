@@ -18,7 +18,7 @@ import com.example.dalia2.R
 import androidx.compose.runtime.*
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
-import com.example.dalia2.ui.theme.purple
+import com.example.dalia2.ui.theme.Purple
 import com.example.dalia2.ui.theme.White
 
 @Composable
@@ -119,7 +119,7 @@ fun AgeButton(
             .width(304.dp)
             .height(44.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) purple else White,
+            containerColor = if (isSelected) Purple else White,
             contentColor = if(isSelected) Color.White else Color.Black
         ),
         shape = RoundedCornerShape(8.dp)
