@@ -93,6 +93,7 @@ fun  StartQuizScreen (
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            //Botão do pop-up
             Button(
                 onClick = {
                     if (!foregroundPermissionState.allPermissionsGranted) { //Permissão durante uso do app
@@ -117,7 +118,7 @@ fun  StartQuizScreen (
                 )
             }
 
-            //Pop-up(Rationale)
+            //Pop-up
             if (foregroundPermissionState.shouldShowRationale || backgroundPermissionState.status.shouldShowRationale) {
                 AlertDialog(
                     onDismissRequest = { },
@@ -136,7 +137,6 @@ fun  StartQuizScreen (
                     }
                 )
             }
-
     }
 }
 
