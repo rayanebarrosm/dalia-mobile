@@ -1,22 +1,47 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,30 +49,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.NavHostController
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.util.lerp
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.dalia2.R
+import com.example.dalia2.ui.theme.Black
+import com.example.dalia2.ui.theme.BlueButton
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.LightPink
 import com.example.dalia2.ui.theme.Purple
-import com.example.dalia2.ui.components.Destination
-import com.example.dalia2.ui.theme.Black
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.util.lerp // Importante para o lerp
-import com.example.dalia2.ui.theme.BlueButton
 import kotlin.math.absoluteValue
 
-data class MeuItem(
+// Data class
+data class MeuItemPregnant(
     val id: Int,
     val titulo: String,
     val dia: String,
@@ -57,22 +71,24 @@ data class MeuItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomePregnantScreen(
     onNavigateToRegister: () -> Unit = {},
     onNavigateToCalendar: () -> Unit = {}
 ) {
     val meusDados = listOf(
-        MeuItem(1, "Ontem", "Ontem", isClickable = true, destination = "calendar"),
-        MeuItem(2, "Hoje", "Hoje", isClickable = true, destination = "register"),
-        MeuItem(3, "Amanhã", "Amanhã", isClickable = false, destination = null)
+        MeuItemPregnant(1, "Ontem", "Ontem", isClickable = true, destination = "calendar"),
+        MeuItemPregnant(2, "Hoje", "Hoje", isClickable = true, destination = "register"),
+        MeuItemPregnant(3, "Amanhã", "Amanhã", isClickable = false, destination = null)
     )
+
+    val scrollState = rememberScrollState()
 
     var selectedDay by remember { mutableStateOf(meusDados[1]) }
 
-    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(Color.White)
     ) {
         // Seção dos dias com gradiente
@@ -81,15 +97,14 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .height(280.dp)
         ) {
-            // Gradiente
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                Color(0xFFF7CFC3), // Centro
-                                Color(0xFFF7C4CF)  // Pontas
+                                Color(0xFFF7CFC3),
+                                Color(0xFFF7C4CF)
                             ),
                             radius = 600f,
                             center = Offset(0.5f, 0.5f)
@@ -97,12 +112,11 @@ fun HomeScreen(
                     )
             )
 
-            // Carrossel de dias
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center //
+                contentAlignment = Alignment.Center
             ) {
-                DayCarousel(
+                DayCarouselPregnant(
                     itens = meusDados,
                     selectedDay = selectedDay,
                     onDaySelected = { day ->
@@ -110,7 +124,7 @@ fun HomeScreen(
                             selectedDay = day
                             when (day.destination) {
                                 "register" -> onNavigateToRegister()
-                                 "calendar" -> onNavigateToCalendar()
+                                "calendar" -> onNavigateToCalendar()
                             }
                         }
                     }
@@ -121,14 +135,13 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Notícias sobre saúde",
+                text = "Notícias sobre sua saúde e do seu bebê:",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Black,
@@ -137,20 +150,60 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Carrossel de notícias de saúde
-            NewsCarousel(
-                cardColor = Purple,
-                newsType = "saude"
+            // Botões estaticos
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { /* */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
+                ) {
+                    Text("Vacinação", fontSize = 12.sp, color = Color.Black)
+                }
+                Button(
+                    onClick = { /* */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
+                ) {
+                    Text("Corpo", fontSize = 12.sp, color = Color.Black)
+                }
+                Button(
+                    onClick = { /*  */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
+                ) {
+                    Text("Alimentação", fontSize = 12.sp, color = Color.Black)
+                }
+            }
+
+            Spacer(modifier = Modifier
+                .height(16.dp))
+
+            // Carrossel de notícias
+            NewsCarouselPregnant(
+                cardColor = BlueButton,
+                newsType = "gestante",
+                imageResId = R.drawable.lotus
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            //Banner
+            // Banner
             Banner()
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Título: Notícias sobre legislação
             Text(
                 text = "Notícias sobre legislação",
                 fontSize = 20.sp,
@@ -161,26 +214,24 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Carrossel de notícias de legislação
-            NewsCarousel(
-                cardColor = LightPink,
-                newsType = "legislacao"
+            // Carrossel de notícias
+            NewsCarouselPregnant(
+                cardColor = Color(0xFFFF8E8E),
+                newsType = "legislacao",
+                imageResId = R.drawable.lotus
             )
 
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
-
 @Composable
-fun DayCarousel(
-    itens: List<MeuItem>,
-    selectedDay: MeuItem,
-    onDaySelected: (MeuItem) -> Unit
+fun DayCarouselPregnant(
+    itens: List<MeuItemPregnant>,
+    selectedDay: MeuItemPregnant,
+    onDaySelected: (MeuItemPregnant) -> Unit
 ) {
-    // Procuramos o índice do item selecionado para começar nele
     val initialPageIndex = itens.indexOf(selectedDay).coerceAtLeast(0)
-
     val pagerState = rememberPagerState(
         initialPage = initialPageIndex,
         pageCount = { itens.size }
@@ -194,8 +245,6 @@ fun DayCarousel(
     ) { page ->
         val item = itens[page]
         val isSelected = pagerState.currentPage == page
-
-        // Cálculo de escala e alpha para suavidade
         val pageOffset = (
                 (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
                 ).absoluteValue
@@ -203,7 +252,6 @@ fun DayCarousel(
         val scale = lerp(0.8f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
         val alpha = lerp(0.6f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
 
-        // Box centralizadora para garantir simetria total
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -248,59 +296,7 @@ fun DayCarousel(
 }
 
 @Composable
-fun Banner() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(BlueButton, LightPink)
-                    )
-                )
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(0.7f)
-            ) {
-                Text(
-                    text = "No Dália, nos importamos com a sua segurança, por isso gostaríamos que ficasse por dentro das leis que te defendem.",
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    lineHeight = 20.sp
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .weight(0.3f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.hm_moca),
-                    contentDescription = "Gestante",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-    }
-}
-
-// COMPONENTE: Card de Notícia
-@Composable
-fun NewsCard(
+fun NewsCardPregnant(
     imageResId: Int,
     title: String,
     description: String,
@@ -320,13 +316,12 @@ fun NewsCard(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            // Imagem
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFFFF)),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -339,13 +334,12 @@ fun NewsCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Badge com a cor correspondente
             Surface(
                 shape = RoundedCornerShape(4.dp),
                 color = Color.White
             ) {
                 Text(
-                    text = if (cardColor == Purple) "Saúde" else "Legislação",
+                    text = if (cardColor == BlueButton) "Gestante" else "Legislação",
                     fontSize = 10.sp,
                     color = cardColor,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
@@ -376,35 +370,34 @@ fun NewsCard(
     }
 }
 
-// COMPONENTE: Carrossel de Notícias
 @Composable
-fun NewsCarousel(
+fun NewsCarouselPregnant(
     cardColor: Color,
-    newsType: String
+    newsType: String,
+    imageResId: Int
 ) {
     data class NewsItem(
         val id: Int,
-        val imageResId: Int,
         val title: String,
         val description: String
     )
 
     val newsItems = remember(newsType) {
-        if (newsType == "saude") {
+        if (newsType == "gestante") {
             listOf(
-                NewsItem(0, R.drawable.lotus, "Como melhorar sua saúde mental", "Dicas simples para o dia a dia que podem transformar sua vida."),
-                NewsItem(1, R.drawable.lotus, "Benefícios da atividade física", "Descubra como pequenos movimentos fazem diferença."),
-                NewsItem(2, R.drawable.lotus, "Alimentação saudável na rotina", "Receitas fáceis e nutritivas para o seu dia."),
-                NewsItem(3, R.drawable.lotus, "Sono reparador: guia completo", "Técnicas para melhorar sua qualidade de sono."),
-                NewsItem(4, R.drawable.lotus, "Prevenção é o melhor caminho", "Exames e cuidados que você não pode ignorar.")
+                NewsItem(0, "Cuidados na gestação: primeiro trimestre", "Tudo que você precisa saber sobre os primeiros meses."),
+                NewsItem(1, "Alimentação saudável para gestantes", "Nutrientes essenciais para você e seu bebê."),
+                NewsItem(2, "Exercícios permitidos na gravidez", "Movimentos seguros para manter a saúde."),
+                NewsItem(3, "Preparação para o parto", "Dicas para se preparar para este momento especial."),
+                NewsItem(4, "Amamentação: primeiros passos", "Guia para iniciar a amamentação com sucesso.")
             )
         } else {
             listOf(
-                NewsItem(0, R.drawable.lotus, "Nova lei de saúde pública", "Entenda como a nova legislação impacta seu dia a dia."),
-                NewsItem(1, R.drawable.lotus, "Direitos das gestantes", "Conheça seus direitos e benefícios durante a gestação."),
-                NewsItem(2, R.drawable.lotus, "Atualizações no SUS", "Saiba o que mudou no sistema público de saúde."),
-                NewsItem(3, R.drawable.lotus, "Telemedicina: o que diz a lei", "Regulamentações e permissões para consultas remotas."),
-                NewsItem(4, R.drawable.lotus, "Programas de saúde preventiva", "Legislação sobre campanhas de prevenção.")
+                NewsItem(0, "Nova lei de saúde pública", "Entenda como a nova legislação impacta seu dia a dia."),
+                NewsItem(1, "Direitos das gestantes", "Conheça seus direitos e benefícios durante a gestação."),
+                NewsItem(2, "Atualizações no SUS", "Saiba o que mudou no sistema público de saúde."),
+                NewsItem(3, "Telemedicina: o que diz a lei", "Regulamentações e permissões para consultas remotas."),
+                NewsItem(4, "Programas de saúde preventiva", "Legislação sobre campanhas de prevenção.")
             )
         }
     }
@@ -415,8 +408,8 @@ fun NewsCarousel(
         contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         items(newsItems) { item ->
-            NewsCard(
-                imageResId = item.imageResId,
+            NewsCardPregnant(
+                imageResId = imageResId,
                 title = item.title,
                 description = item.description,
                 cardColor = cardColor,
@@ -426,97 +419,10 @@ fun NewsCarousel(
     }
 }
 
-// Navegação
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NavigationBarExample(modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
-    val startDestination = Destination.Home.route
-    var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
-
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            NavigationBar(
-                windowInsets = NavigationBarDefaults.windowInsets
-            ) {
-                Destination.items.forEachIndexed { index, destination ->
-                    NavigationBarItem(
-                        selected = selectedDestination == index,
-                        onClick = {
-                            navController.navigate(destination.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            selectedDestination = index
-                        },
-                        icon = {
-                            Icon(
-                                destination.icon(),
-                                contentDescription = destination.label
-                            )
-                        },
-                        label = { Text(destination.label) }
-                    )
-                }
-            }
-        }
-    ) { contentPadding ->
-        MainNavGraph(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier.padding(contentPadding)
-        )
-    }
-}
-
-@Composable
-fun MainNavGraph(
-    navController: NavHostController,
-    startDestination: String,
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier
-    ) {
-        composable(Destination.Home.route) {
-            HomeScreen(
-                onNavigateToRegister = { navController.navigate("register") },
-                onNavigateToCalendar = { navController.navigate(Destination.Calendar.route) }
-            )
-        }
-
-        composable(Destination.Calendar.route) {
-            CalendarScreen()
-        }
-
-        composable(Destination.Bot.route) {
-            DaliaBotScreen()
-        }
-
-        composable(Destination.Forum.route) {
-            ForumScreen()
-        }
-
-        composable(Destination.Settings.route) {
-            ProfileScreen()
-        }
-
-        composable("register") {
-            RegisterScreen()
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+fun HomePregnantScreenPreview() {
     Dalia2Theme {
-        HomeScreen()
+        HomePregnantScreen()
     }
 }
