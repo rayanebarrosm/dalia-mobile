@@ -22,6 +22,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -49,11 +50,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Black
 import com.example.dalia2.ui.theme.BlueButton
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.LightPink
+import com.example.dalia2.ui.theme.Purple
 import kotlin.math.absoluteValue
 
 // Data class
@@ -77,11 +81,14 @@ fun HomePregnantScreen(
         MeuItemPregnant(3, "Amanhã", "Amanhã", isClickable = false, destination = null)
     )
 
+    val scrollState = rememberScrollState()
+
     var selectedDay by remember { mutableStateOf(meusDados[1]) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(Color.White)
     ) {
         // Seção dos dias com gradiente
@@ -143,38 +150,45 @@ fun HomePregnantScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Botões de filtro
+            // Botões estaticos
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    onClick = { /* Filtrar vacinação */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8CA3)),
+                    onClick = { /* */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
                 ) {
-                    Text("Vacinação", fontSize = 12.sp, color = Color.White)
+                    Text("Vacinação", fontSize = 12.sp, color = Color.Black)
                 }
                 Button(
-                    onClick = { /* Filtrar corpo */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8CA3)),
+                    onClick = { /* */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
                 ) {
-                    Text("Corpo", fontSize = 12.sp, color = Color.White)
+                    Text("Corpo", fontSize = 12.sp, color = Color.Black)
                 }
                 Button(
-                    onClick = { /* Filtrar alimentação */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8CA3)),
+                    onClick = { /*  */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
                 ) {
-                    Text("Alimentação", fontSize = 12.sp, color = Color.White)
+                    Text("Alimentação", fontSize = 12.sp, color = Color.Black)
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier
+                .height(16.dp))
 
             // Carrossel de notícias
             NewsCarouselPregnant(
@@ -200,7 +214,7 @@ fun HomePregnantScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Carrossel de notícias - SEGUNDA FILEIRA (Cor FF8E8E)
+            // Carrossel de notícias
             NewsCarouselPregnant(
                 cardColor = Color(0xFFFF8E8E),
                 newsType = "legislacao",
@@ -211,58 +225,6 @@ fun HomePregnantScreen(
         }
     }
 }
-
-@Composable
-fun BannerPregnant() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(BlueButton, LightPink)
-                    )
-                )
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(0.7f)
-            ) {
-                Text(
-                    text = "Acompanhamento gestacional é essencial! Cuide de você e do seu bebê com nossas dicas diárias.",
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    lineHeight = 20.sp
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .weight(0.3f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.hm_moca),
-                    contentDescription = "Gestante",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun DayCarouselPregnant(
     itens: List<MeuItemPregnant>,

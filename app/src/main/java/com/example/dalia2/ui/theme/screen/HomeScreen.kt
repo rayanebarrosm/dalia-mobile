@@ -32,6 +32,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.LightPink
@@ -67,6 +69,7 @@ fun HomeScreen(
 
     var selectedDay by remember { mutableStateOf(meusDados[1]) }
 
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,6 +121,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -142,62 +146,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             //Banner
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFF8CA3))
-            ) {
-                //gradiente
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    BlueButton,
-                                    LightPink
-                                )
-                            )
-                        )
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Coluna- Texto
-                    Column(
-                        modifier = Modifier.weight(0.7f)
-                    ) {
-                        Text(
-                            text = "No Dália, nos importamos com a sua segurança, por isso gostaríamos que ficasse por dentro das leis que te defendem.",
-                            fontSize = 14.sp,
-                            color = Color.Black,
-                            lineHeight = 20.sp
-                        )
-                    }
-
-                    // Coluna- Imagem
-                    Column(
-                        modifier = Modifier
-                            .weight(0.3f)
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.hm_moca),
-                            contentDescription = "Mulher demonstrando sua força",
-                            modifier = Modifier
-                                .size(120.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-            }
-
-
+            Banner()
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -293,6 +242,57 @@ fun DayCarousel(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun Banner() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(BlueButton, LightPink)
+                    )
+                )
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(0.7f)
+            ) {
+                Text(
+                    text = "No Dália, nos importamos com a sua segurança, por isso gostaríamos que ficasse por dentro das leis que te defendem.",
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    lineHeight = 20.sp
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(0.3f)
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.hm_moca),
+                    contentDescription = "Gestante",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
             }
         }
     }

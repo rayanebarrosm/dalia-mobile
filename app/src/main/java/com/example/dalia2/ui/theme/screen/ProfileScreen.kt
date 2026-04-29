@@ -52,7 +52,10 @@ fun ProfileScreen() {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Perfil", fontWeight = FontWeight.SemiBold,);
+            Text(text = "Perfil",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 24.sp
+                );
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -77,18 +80,22 @@ fun ProfileScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
 
             ) {
-                Column() {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
+
+                ) {
 
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ){
-                        Text(text = "Informações");
+                        Text(text = "Informações", fontSize = 20.sp,  fontWeight = FontWeight.SemiBold);
 
                         Button(
                             onClick = { /* tela activity*/ },
@@ -125,7 +132,8 @@ fun ProfileScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 )
@@ -133,6 +141,7 @@ fun ProfileScreen() {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
                     SettingsButton (
                         text = "Idioma",
@@ -182,17 +191,24 @@ fun ProfileScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 colors = CardDefaults.cardColors( containerColor = Color.White)
 
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                    ,
                 ) {
                     Text(
-                        text = "Zona de perigo",
-                        fontSize = 20.sp
+                        text = "Zona de perigo!",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+
                     )
+
+                    Spacer(modifier = Modifier.height(3.dp))
 
                     SettingsButton(
                         text = "Denunciar",
@@ -260,7 +276,8 @@ fun InfoSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 12.dp)
+
     ) {
         Text(
             text = label,
@@ -317,7 +334,10 @@ fun SettingsButton(
 
 }
 
-@Preview()
+@Preview(
+    widthDp = 500,
+    heightDp = 1000
+)
 @Composable
 fun ProfileScreenPreview() {
     Dalia2Theme {
