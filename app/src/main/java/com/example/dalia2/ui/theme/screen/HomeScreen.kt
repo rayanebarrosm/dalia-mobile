@@ -38,6 +38,12 @@ import com.example.dalia2.ui.theme.LightPink
 import com.example.dalia2.ui.theme.Purple
 import com.example.dalia2.ui.components.Destination
 import com.example.dalia2.ui.theme.Black
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.util.lerp // Importante para o lerp
+import com.example.dalia2.ui.theme.BlueButton
+import kotlin.math.absoluteValue
 
 data class MeuItem(
     val id: Int,
@@ -64,15 +70,15 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White) // ✅ FUNDO BRANCO na tela toda
+            .background(Color.White)
     ) {
         // Seção dos dias com gradiente
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(280.dp) // Altura aumentada para centralizar
+                .height(280.dp)
         ) {
-            // Gradiente com as cores solicitadas
+            // Gradiente
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,10 +94,10 @@ fun HomeScreen(
                     )
             )
 
-            // Carrossel de dias - CENTRALIZADO VERTICALMENTE
+            // Carrossel de dias
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center // ✅ Centraliza verticalmente
+                contentAlignment = Alignment.Center //
             ) {
                 DayCarousel(
                     itens = meusDados,
@@ -101,7 +107,7 @@ fun HomeScreen(
                             selectedDay = day
                             when (day.destination) {
                                 "register" -> onNavigateToRegister()
-                                "calendar" -> onNavigateToCalendar()
+                                 "calendar" -> onNavigateToCalendar()
                             }
                         }
                     }
@@ -117,18 +123,17 @@ fun HomeScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Título: Notícias sobre saúde (COR PURPLE)
             Text(
                 text = "Notícias sobre saúde",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Black, // ✅ Cor Purple
+                color = Black,
                 modifier = Modifier.align(Alignment.Start)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Carrossel de notícias de saúde (COR PURPLE)
+            // Carrossel de notícias de saúde
             NewsCarousel(
                 cardColor = Purple,
                 newsType = "saude"
@@ -136,18 +141,78 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Título: Notícias sobre legislação (COR PINKLIGHT)
+            //Banner
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFF8CA3))
+            ) {
+                //gradiente
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    BlueButton,
+                                    LightPink
+                                )
+                            )
+                        )
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Coluna- Texto
+                    Column(
+                        modifier = Modifier.weight(0.7f)
+                    ) {
+                        Text(
+                            text = "No Dália, nos importamos com a sua segurança, por isso gostaríamos que ficasse por dentro das leis que te defendem.",
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            lineHeight = 20.sp
+                        )
+                    }
+
+                    // Coluna- Imagem
+                    Column(
+                        modifier = Modifier
+                            .weight(0.3f)
+                            .fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.hm_moca),
+                            contentDescription = "Mulher demonstrando sua força",
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
+
+
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Título: Notícias sobre legislação
             Text(
                 text = "Notícias sobre legislação",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Black, // ✅ Cor PinkLight
+                color = Black,
                 modifier = Modifier.align(Alignment.Start)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Carrossel de notícias de legislação (COR PINKLIGHT)
+            // Carrossel de notícias de legislação
             NewsCarousel(
                 cardColor = LightPink,
                 newsType = "legislacao"
@@ -158,67 +223,73 @@ fun HomeScreen(
     }
 }
 
-// COMPONENTE: Carrossel de Dias (formato OVAL - mais largo que alto)
 @Composable
 fun DayCarousel(
     itens: List<MeuItem>,
     selectedDay: MeuItem,
     onDaySelected: (MeuItem) -> Unit
 ) {
+    // Procuramos o índice do item selecionado para começar nele
+    val initialPageIndex = itens.indexOf(selectedDay).coerceAtLeast(0)
+
     val pagerState = rememberPagerState(
-        initialPage = 1,
+        initialPage = initialPageIndex,
         pageCount = { itens.size }
     )
 
-    LaunchedEffect(Unit) {
-        pagerState.scrollToPage(1)
-    }
-
     HorizontalPager(
         state = pagerState,
-        contentPadding = PaddingValues(horizontal = 80.dp),
-        modifier = Modifier.fillMaxWidth()
+        contentPadding = PaddingValues(horizontal = 90.dp),
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) { page ->
         val item = itens[page]
         val isSelected = pagerState.currentPage == page
-        val isClickable = item.isClickable
 
-        // ✅ FORMATO OVAL (largura maior que altura)
-        Surface(
-            modifier = Modifier
-                .width(if (isSelected) 120.dp else 90.dp)   // Largura
-                .height(if (isSelected) 160.dp else 110.dp) // Altura maior (oval em pé)
-                .scale(if (isSelected) 1.0f else 0.85f)
-                .then(
-                    if (isClickable) Modifier.clickable { onDaySelected(item) } else Modifier
-                ),
-            shape = CircleShape,
-            color = if (isSelected) Color(0xFFFF8CA3) else Color.White.copy(alpha = 0.9f),
-            shadowElevation = if (isSelected) 8.dp else 2.dp,
-            tonalElevation = 0.dp
+        // Cálculo de escala e alpha para suavidade
+        val pageOffset = (
+                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                ).absoluteValue
+
+        val scale = lerp(0.8f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+        val alpha = lerp(0.6f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+
+        // Box centralizadora para garantir simetria total
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            Surface(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(210.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        this.alpha = alpha
+                    }
+                    .clickable(enabled = item.isClickable) { onDaySelected(item) },
+                shape = CircleShape,
+                color = if (isSelected) Color(0xFFFFF5E6) else Color.White.copy(alpha = 0.8f),
+                shadowElevation = if (isSelected) 8.dp else 0.dp
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = item.titulo,
-                        fontSize = if (isSelected) 18.sp else 14.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else Color(0xFF666666),
-                        textAlign = TextAlign.Center
+                        text = item.titulo.uppercase(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = if (isSelected) Color.Black else Color.Gray
                     )
 
-                    if (!isClickable) {
-                        Spacer(modifier = Modifier.height(4.dp))
+                    if (isSelected && item.titulo == "Hoje") {
                         Text(
-                            text = "🔒",
-                            fontSize = 10.sp,
-                            color = Color.Gray
+                            text = "Como você está?",
+                            fontSize = 12.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
