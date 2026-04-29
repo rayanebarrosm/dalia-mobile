@@ -15,19 +15,23 @@ data class UserResponse(
     val name: String,
     val surname: String,
     val email: String,
-    val password: String,
     val enable: Boolean,
     val verificationToken: String,
     val TokenExperation: Long
 )
 
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
+
 data class VerificationRequest(
     val email: String,
-    val token: Int
+    val token: String
 )
 
 data class TokensResponse(
-    val acessToken: String,
+    val token: String,
     val refreshToken:String
 )
 

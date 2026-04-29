@@ -3,7 +3,9 @@ package com.example.dalia2.ui.theme.screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -27,13 +29,16 @@ import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.viewmodel.SignupViewModel
 import androidx.compose.material3.Surface
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import java.net.URLEncoder
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel(),
-    onLoginClick: () -> Unit = {}, // Parâmetro para navegar para login
+    onLoginClick: () -> Unit, // Parâmetro para navegar para login
+    navController: NavController,
     onSignUpSuccess: () -> Unit // Parâmetro para após cadastro bem-sucedido
 ) {
     var name by remember { mutableStateOf("") }
@@ -41,6 +46,8 @@ fun SignupScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passConfirmation by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
+
     // Estados de erro
     var nameError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
@@ -48,7 +55,8 @@ fun SignupScreen(
 
     LaunchedEffect(viewModel.sigupSucess) {
         if (viewModel.sigupSucess) {
-            onSignUpSuccess()
+            val encodedEmail = URLEncoder.encode(email, "UTF-8")
+            navController.navigate("verification/$encodedEmail")
         }
     }
 
@@ -57,7 +65,8 @@ fun SignupScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 15.dp),
+                .padding(horizontal = 15.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(60.dp))
@@ -241,7 +250,7 @@ fun SignupScreen(
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
@@ -252,9 +261,10 @@ fun SignupScreenPreview() {
         ) {
             SignupScreen(
                 viewModel = viewModel(),
-                onLoginClick = { },
+                onLoginClick = {},
+                navController = NavController(),
                 onSignUpSuccess = {}
             )
         }
     }
-}
+}*/

@@ -33,7 +33,7 @@ fun LoginScreen(
 ) {
     // Variáveis para armazenar o que o usuário digita
     var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -89,8 +89,8 @@ fun LoginScreen(
 
         // 5. Campo de Senha
         OutlinedTextField(
-            value = senha,
-            onValueChange = { senha = it },
+            value = password,
+            onValueChange = { password = it },
             label = { Text("Senha") },
             modifier = Modifier.width(304.dp),
             shape = RoundedCornerShape(10.dp),

@@ -4,6 +4,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -26,6 +27,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+
     // Lista de rotas onde a barra deve aparecer
     val bottomBarRoutes = listOf("home", "calendar", "bot", "forum", "settings")
 
@@ -35,7 +37,7 @@ fun AppNavigation() {
                 BottomNavigationBar(navController)
             }
         }
-    ) { paddingValues ->
+    ) { padding ->
     NavHost(
         navController = navController,
         startDestination = "welcomeScreen" // pagina inícial
@@ -65,7 +67,7 @@ fun AppNavigation() {
         }
 
         composable("signup") {
-            SignupScreen(
+            SignupScreen(navController = navController,
                 onSignUpSuccess = {
                     navController.navigate("verification") // vai para o quiz
                 },
@@ -75,12 +77,14 @@ fun AppNavigation() {
             )
         }
 
-        composable("verification") {
+        //passa o email pela "url"
+        composable("verification/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
             VerificationScreen(
+                email = email,
                 onVerificationSucess = {
                     navController.navigate("startQuiz")
                 }
-
             )
         }
 

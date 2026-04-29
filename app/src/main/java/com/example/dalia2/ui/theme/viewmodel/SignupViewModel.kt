@@ -23,7 +23,6 @@ class SignupViewModel @Inject constructor(
     private val repository: DaliaRepository
 ) : ViewModel(){
     private val _uiState = MutableStateFlow(UserRegistre("", "", "", "", ""))
-    val uiState = _uiState.asStateFlow()
     var isLoading by mutableStateOf(false)
         private set
     var sigupSucess by mutableStateOf(false)
