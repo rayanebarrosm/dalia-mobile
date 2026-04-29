@@ -62,6 +62,7 @@ dependencies {
     testImplementation(libs.junit)
     implementation("com.google.accompanist:accompanist-permissions:0.37.3") // gerenciador de permissões
     implementation ("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

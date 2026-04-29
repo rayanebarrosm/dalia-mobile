@@ -227,7 +227,7 @@ fun ProfileScreen() {
                 }
             }
 
-            //Pop-up
+            //Pop-up - Mudar de modo
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
@@ -261,6 +261,30 @@ fun ProfileScreen() {
                     }
                 )
             }
+
+            //Pop-up - Denunciar
+            if(ShowDialog){
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text("Atenção") },
+                    text = {
+                        Text("Você tem certeza que gostaria de realizar a denuncia?")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showDialog = false
+                        }) {
+                            Text("Sim", color = PinkButton, fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDialog = false }) {
+                            Text("Não", color = Color.Gray)
+                        }
+                    }
+                )
+            }
+
 
             Spacer(modifier = Modifier.height(32.dp))
         }
