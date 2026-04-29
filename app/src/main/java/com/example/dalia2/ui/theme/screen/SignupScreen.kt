@@ -172,7 +172,7 @@ fun SignupScreen(
                 onValueChange = {
                     password = it
                     viewModel.onPasswordChanged(it)
-                    if (it.length >= 6) passwordError = false
+                    if (it.length >= 8) passwordError = false
                 },
                 label = { Text("Senha") },
                 isError = passwordError,

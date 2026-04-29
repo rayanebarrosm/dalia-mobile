@@ -42,7 +42,26 @@ class DaliaRepository @Inject constructor(
         }
     }
 
-    suspend fun login(LoginRequest: LoginRequest): Response<TokensResponse>{
-        return api.login(LoginRequest)
+    suspend fun login(LoginRequest: LoginRequest): Result<TokensResponse>{
+        return try {
+            val response = api.login(LoginRequest)
+            if(response.isSuccessful){
+                val tokens = response.body()
+                if(tokens != null){
+                    Result.success(tokens)
+                } else {
+                    Result.failure(Exception("Resposta vazia"))
+                }
+            }else{
+                val errorCode = response.code()
+                val errorMsg = response.errorBody()?.string() ?: "Erro desconhecido"
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorMsg")
+
+                Result.failure(Exception("Erro $errorCode: $errorMsg"))
+            }
+        }catch(e: Exception){
+            Log.d("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
     }
 }

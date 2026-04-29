@@ -261,7 +261,7 @@ fun ProfileScreen() {
                     }
                 )
             }
-
+/* COMENTEI POIS ESTA DANDO ERRO AQUI, NÃO MUDEI NADA -ASS: BIA
             //Pop-up - Denunciar
             if(ShowDialog){
                 AlertDialog(
@@ -285,7 +285,7 @@ fun ProfileScreen() {
                 )
             }
 
-
+*/
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

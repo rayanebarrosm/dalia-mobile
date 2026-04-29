@@ -1,7 +1,5 @@
 package com.example.dalia2.ui.theme
 
-package com.example.dalia2.ui.theme
-
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 
