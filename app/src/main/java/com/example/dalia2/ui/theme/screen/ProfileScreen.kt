@@ -19,6 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
@@ -26,12 +31,19 @@ import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
 import com.example.dalia2.ui.theme.White
 
+
+data class LanguageOption(
+    val code: String?,
+    val name: String
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen() {
 
-    var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var showModeDialog by remember { mutableStateOf(false) }
     var isPregnancyMode by remember { mutableStateOf(false) }
+    var showReportDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
     Box(
@@ -146,7 +158,20 @@ fun ProfileScreen() {
                     SettingsButton (
                         text = "Idioma",
                         icon = R.drawable.idioma_icon,
-                        onClick = { /* Mudar idioma */ },
+                        onClick = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                }
+                                context.startActivity(intent)
+                            } else {
+                                // Versões anteriores do Android
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                }
+                                context.startActivity(intent)
+                            }
+                        },
                         backgroundColor = LightPink
                     )
 
@@ -228,12 +253,12 @@ fun ProfileScreen() {
             }
 
             //Pop-up - Mudar de modo
-            if (showDialog) {
+            if (showModeDialog) {
                 AlertDialog(
-                    onDismissRequest = { showDialog = false },
+                    onDismissRequest = { showModeDialog = false },
                     icon = {
                         Icon(
-                            painter = painterResource(
+                            painter =   painterResource(
                                 id = if (isPregnancyMode) R.drawable.pop_heartcalendar else R.drawable.pop_pregnance
                             ),
                             contentDescription = null,
@@ -248,14 +273,14 @@ fun ProfileScreen() {
                     confirmButton = {
                         TextButton(onClick = {
                             isPregnancyMode = !isPregnancyMode
-                            showDialog = false
+                            showModeDialog = false
                             // Adicione aqui a navegação se necessário
                         }) {
                             Text("Confirmar", color = PinkButton, fontWeight = FontWeight.Bold)
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { showDialog = false }) {
+                        TextButton(onClick = { showModeDialog = false }) {
                             Text("Cancelar", color = Color.Gray)
                         }
                     }
@@ -263,22 +288,22 @@ fun ProfileScreen() {
             }
 /* COMENTEI POIS ESTA DANDO ERRO AQUI, NÃO MUDEI NADA -ASS: BIA
             //Pop-up - Denunciar
-            if(ShowDialog){
+            if(showReportDialog){
                 AlertDialog(
-                    onDismissRequest = { showDialog = false },
+                    onDismissRequest = { showReportDialog = false },
                     title = { Text("Atenção") },
                     text = {
-                        Text("Você tem certeza que gostaria de realizar a denuncia?")
+                        Text("Você tem certeza que gostaria de realizar a denúncia?")
                     },
                     confirmButton = {
                         TextButton(onClick = {
-                            showDialog = false
+                            showReportDialog = false
                         }) {
                             Text("Sim", color = PinkButton, fontWeight = FontWeight.Bold)
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { showDialog = false }) {
+                        TextButton(onClick = { showReportDialog = false }) {
                             Text("Não", color = Color.Gray)
                         }
                     }
@@ -355,7 +380,6 @@ fun SettingsButton(
             )
         }
     }
-
 }
 
 @Preview(
