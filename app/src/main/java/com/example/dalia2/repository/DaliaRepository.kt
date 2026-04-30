@@ -14,8 +14,29 @@ import javax.inject.Inject
 class DaliaRepository @Inject constructor(
     private val api: ApiService
 ) {
-    suspend fun createUser(UserRegistre: UserRegistre): Response<UserResponse> {
-        return api.createUser(UserRegistre)
+    suspend fun createUser(userRegistre: UserRegistre): Result<UserResponse> {
+        return try {
+            val response = api.createUser(userRegistre)
+            if (response.isSuccessful) {
+                val userResponse = response.body()
+                if (userResponse != null) {
+                    Result.success(userResponse) // Agora os tipos batem!
+                } else {
+                    Result.failure(Exception("Corpo da resposta vazio"))
+                }
+            } else {
+                val errorCode = response.code()
+                val errorBody = response.errorBody()?.string() ?: "Erro desconhecido"
+                val cleanMessage = errorBody.replace(Regex("""\d{3}:\s*"""),"").replace("}","")
+
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorBody")
+
+                Result.failure(Exception(cleanMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
     }
 
     suspend fun verifiyCode( verificationRequest: VerificationRequest): Result<TokensResponse>{
@@ -31,10 +52,12 @@ class DaliaRepository @Inject constructor(
                 }
             } else {
                 val errorCode = response.code()
-                val errorMsg = response.errorBody()?.string() ?: "Erro desconhecido"
-                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorMsg")
+                val errorBody = response.errorBody()?.string() ?: "Erro desconhecido"
+                val cleanMessage = errorBody.replace(Regex("""\d{3}:\s*"""),"").replace("}","")
 
-                Result.failure(Exception("Erro $errorCode: $errorMsg"))
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorBody")
+
+                Result.failure(Exception(cleanMessage))
             }
         } catch (e: Exception) {
             Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
@@ -54,10 +77,11 @@ class DaliaRepository @Inject constructor(
                 }
             }else{
                 val errorCode = response.code()
-                val errorMsg = response.errorBody()?.string() ?: "Erro desconhecido"
-                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorMsg")
+                val errorBody = response.errorBody()?.string() ?: "Erro desconhecido"
+                val cleanMessage = errorBody.replace(Regex("""\d{3}:\s*"""),"").replace("}","")
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorBody")
 
-                Result.failure(Exception("Erro $errorCode: $errorMsg"))
+                Result.failure(Exception(cleanMessage))
             }
         }catch(e: Exception){
             Log.d("REPO_EXCEPTION", "Falha catastrófica", e)

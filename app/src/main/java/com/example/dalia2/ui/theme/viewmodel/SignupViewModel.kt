@@ -62,16 +62,17 @@ class SignupViewModel @Inject constructor(
         isLoading = true
         viewModelScope.launch {
             try {
-                val registro = _uiState.value
-                val response = repository.createUser(registro)
+                val request = _uiState.value
+                val response = repository.createUser(request)
                 Log.d("TESTE", "Tentando criar")
 
-                if (response.isSuccessful) {
+                if (response.isSuccess) {
                     sigupSucess = true
-                    Log.d("API_SUCESS", "Usuario: ${response.body()}")
+                    Log.d("API_SUCESS", "Usuario: ${request.name} criado com sucesso")
                 } else {
                     _isSuccess.value = false
-                    Log.d("API_ERROR", "Erro: ${response.errorBody()?.string()}")
+                    errorMessage = repository.createUser(request).exceptionOrNull()?.message
+                    Log.d("API_ERROR", "Erro: ")
                 }
             } catch (e: Exception) {
                 errorMessage = "Falha na conexão"

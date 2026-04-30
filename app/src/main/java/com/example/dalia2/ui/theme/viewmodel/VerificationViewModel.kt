@@ -48,6 +48,7 @@ class VerificationViewModel @Inject constructor(
                     Log.d("API_SUCESS", "Usuario verificado")
                 } else {
                     verificationSucess = false
+                    errorMessage = repository.verifiyCode(request).exceptionOrNull()?.message
                 }
             } catch (e: Exception){
                 Log.d("API_ERROR", e.message.toString())
