@@ -38,7 +38,13 @@ data class LanguageOption(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    //Variaveis para mudar de tela
+    onEditarClick: () -> Unit = {},
+    onInformationClick: () -> Unit = {},
+    onHelpClick: () -> Unit = {},
+    onChangeModeClick: () -> Unit = {},
+) {
 
     val context = LocalContext.current
     var showModeDialog by remember { mutableStateOf(false) }
@@ -155,6 +161,7 @@ fun ProfileScreen() {
                         .fillMaxWidth()
                     .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
+
                     SettingsButton (
                         text = "Idioma",
                         icon = R.drawable.idioma_icon,
@@ -178,7 +185,7 @@ fun ProfileScreen() {
                     SettingsButton (
                         text = "Informações pessoais",
                         icon = R.drawable.person,
-                        onClick = { /* Ver planos */ },
+                        onClick = onInformationClick,
                         backgroundColor = LightPink
 
                     )
@@ -194,7 +201,7 @@ fun ProfileScreen() {
                     SettingsButton (
                         text = "Ajuda",
                         icon = R.drawable.search_icon,
-                        onClick = { /* Ajuda */ },
+                        onClick = onHelpClick,
                         backgroundColor = LightPink
                     )
 
@@ -274,7 +281,7 @@ fun ProfileScreen() {
                         TextButton(onClick = {
                             isPregnancyMode = !isPregnancyMode
                             showModeDialog = false
-                            // Adicione aqui a navegação se necessário
+                            onChangeModeClick()
                         }) {
                             Text("Confirmar", color = PinkButton, fontWeight = FontWeight.Bold)
                         }
@@ -286,7 +293,7 @@ fun ProfileScreen() {
                     }
                 )
             }
-/* COMENTEI POIS ESTA DANDO ERRO AQUI, NÃO MUDEI NADA -ASS: BIA
+
             //Pop-up - Denunciar
             if(showReportDialog){
                 AlertDialog(
@@ -310,7 +317,6 @@ fun ProfileScreen() {
                 )
             }
 
-*/
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

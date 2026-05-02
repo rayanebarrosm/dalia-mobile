@@ -198,6 +198,27 @@ fun AppNavigation() {
             )
         }
 
+        composable("profileScreen") {
+           ProfileScreen(
+
+            onEditarClick = {
+                navController.navigate("editProfileScreen")
+            },
+            onInformationClick ={
+                navController.navigate("informationScreen")
+            },
+            onHelpClick ={
+                navController.navigate("helpScreen")
+            },
+            onChangeModeClick ={
+                navController.navigate("Screen") //Vai ter que criar um view model para saber em qual modo está
+            }
+
+            )
+        }
+
+
+        //Button Navigation
 
         composable("home") {
             HomeScreen()

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
+import com.example.dalia2.ui.theme.Black
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 
@@ -89,7 +90,7 @@ fun HelpScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(
-            onClick = { /* Contatar suporte */ },
+            onClick = { /* email suporte */ },
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -109,6 +110,40 @@ fun HelpScreen() {
                     fontWeight = FontWeight.Medium
                 )
             }
+        }
+
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Versão: 3.0.0",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Black
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TextButton(
+                onClick = { /* pagina do termo */ },
+                modifier = Modifier.fillMaxWidth() )
+            {
+                Text(
+                    text = "Termos de uso",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Black
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Política de Privacidad",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Black
+            )
         }
     }
 }
