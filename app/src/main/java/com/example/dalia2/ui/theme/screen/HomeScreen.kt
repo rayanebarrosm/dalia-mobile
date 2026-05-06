@@ -43,7 +43,7 @@ import com.example.dalia2.ui.theme.Black
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.util.lerp // Importante para o lerp
+import androidx.compose.ui.util.lerp
 import com.example.dalia2.ui.theme.BlueButton
 import kotlin.math.absoluteValue
 
@@ -75,7 +75,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Seção dos dias com gradiente
+        // Seção dos dias
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,8 +88,8 @@ fun HomeScreen(
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                Color(0xFFF7CFC3), // Centro
-                                Color(0xFFF7C4CF)  // Pontas
+                                Color(0xFFF7CFC3),
+                                Color(0xFFF7C4CF)
                             ),
                             radius = 600f,
                             center = Offset(0.5f, 0.5f)
@@ -106,6 +106,7 @@ fun HomeScreen(
                     itens = meusDados,
                     selectedDay = selectedDay,
                     onDaySelected = { day ->
+                        //Rotas
                         if (day.isClickable) {
                             selectedDay = day
                             when (day.destination) {
@@ -203,7 +204,7 @@ fun DayCarousel(
         val scale = lerp(0.8f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
         val alpha = lerp(0.6f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
 
-        // Box centralizadora para garantir simetria total
+        // Box centralizadora
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
