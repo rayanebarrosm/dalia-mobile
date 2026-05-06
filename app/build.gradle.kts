@@ -80,4 +80,6 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }

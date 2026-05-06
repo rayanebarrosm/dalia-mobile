@@ -1,15 +1,13 @@
 package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -18,34 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
-import com.example.dalia2.ui.theme.PinkButton
-import com.kizitonwose.calendar.compose.HorizontalCalendar
-import com.kizitonwose.calendar.compose.rememberCalendarState
-import com.kizitonwose.calendar.core.*
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizPeriod4Screen(
+    viewModel: SearchViewModel,
     onNextClick: () -> Unit = {}
 ) {
-
     //Variaveis de datas
-    val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(12) } // Visualização de até 1 ano atrás
-
-    //armazena data selecionada
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-
-
-    //Gerenciador a visualização de datas
-    val calendarState = rememberCalendarState(
-        startMonth = startMonth,
-        endMonth = currentMonth,
-        firstVisibleMonth = currentMonth,
-        firstDayOfWeek = DayOfWeek.SUNDAY //Faz com que o domingo seja o primiro dia da semana
-    )
+    val datePickerState = rememberDatePickerState()
+    var showDatePicker by remember { mutableStateOf(false)}
 
     Column(
         modifier = Modifier
@@ -72,87 +56,41 @@ fun QuizPeriod4Screen(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(25.dp))
-
-        HorizontalCalendar(
-            state = calendarState,
-            dayContent = { day ->
-                Day(
-                    day = day, // dia atual
-                    isSelected = selectedDate == day.date, //Confirma a data?? booleano
-                    onClick = {
-                        selectedDate = day.date //adiciona o dia selecionado a selectedDate/Atualiza o estado
-                    }
-                )
-            },
-            monthHeader = { month ->
-                Text(
-                    text = "${month.yearMonth.month} ${month.yearMonth.year}",
-                    modifier = Modifier.padding(16.dp),
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            modifier = Modifier.weight(1f) //tamanho do calendario
-
-        )
-
-        //Quando a data for selecionada o botão aparece
-        if (selectedDate != null) {
-            Button(
-                onClick = {
-                    saveSelectedDate(selectedDate!!)
-                    onNextClick()
-                }, //bota as rotas, o app navigation define e o onclick usa
-                modifier = Modifier
-                    .width(304.dp)
-                    .height(44.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
-                shape = RoundedCornerShape(8.dp)
-
-            ) {
-                Text("Continuar", fontSize = 16.sp)
-            }
+        OutlinedButton(onClick = { showDatePicker = true }) {
+            Icon(Icons.Default.CalendarToday, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text(text = datePickerState.selectedDateMillis?.let {
+               formatarData(it)
+            } ?: "Selecionar data")
         }
 
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val selectedDate = formatarData(datePickerState.selectedDateMillis)
+                        viewModel.updateMenstraucaoDia(selectedDate)
+                        showDatePicker = false
+                        onNextClick()
+                    }) { Text("Confirmar") }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
     }
 }
 
-@Composable
-fun Day(
-    day: CalendarDay,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f) // Quadrado perfeito baseado na largura da coluna
-            .padding(2.dp)   // Pequeno espaço entre os dias
-            .background(
-                color = if (isSelected) PinkButton else Color.Transparent,
-                shape = RoundedCornerShape(8.dp) // Ou CircleShape para ficar redondo
-            )
-            .clickable(
-                enabled = day.position == DayPosition.MonthDate, // Só clica em dias do mês atual
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center // Centraliza o número no quadrado
-    ) {
-        Text(
-            text = day.date.dayOfMonth.toString(),
-            fontSize = 14.sp,
-            // Esmaece dias que não são do mês atual (opcional, mas fica profissional)
-            color = if (isSelected) Color.White
-            else if (day.position == DayPosition.MonthDate) MaterialTheme.colorScheme.onBackground
-            else Color.LightGray
-        )
-    }
-}
+fun formatarData(millis: Long?): String {
+    if (millis == null) return ""
+    val data = Instant.ofEpochMilli(millis)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 
-//Função para salvar a data ou colocar no viewModel?????
-fun saveSelectedDate(date: LocalDate){
-    println("Data salva: $date")
+    // Formato padrão para APIs: AAAA-MM-DD
+    return data.format(DateTimeFormatter.ISO_LOCAL_DATE)
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -162,7 +100,7 @@ fun QuizPeriod4ScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            QuizPeriod4Screen()
+            //QuizPeriod4Screen()
         }
     }
 }

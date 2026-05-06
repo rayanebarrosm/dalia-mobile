@@ -31,7 +31,8 @@ import com.example.dalia2.ui.theme.PinkButton
 
 @Composable
 fun QuizPregnant1Screen (
-    onNextClick: () -> Unit = {}
+    onNextClick: () -> Unit = {},
+    onSkipNext: () -> Unit = {}
 ){
     Column(
         modifier = Modifier
@@ -75,7 +76,7 @@ fun QuizPregnant1Screen (
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = onSkipNext,
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)

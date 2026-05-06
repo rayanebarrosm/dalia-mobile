@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,15 +24,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 @Composable
 fun QuizPeriod2Screen(
-    onNextClick: () -> Unit = {}
+    viewModel: SearchViewModel = hiltViewModel(),
+    onNextClick: () -> Unit,
+    onSkipNext: () -> Unit
 ){
+    LaunchedEffect(viewModel.searchSuccess) {
+        if (viewModel.searchSuccess) {
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +71,9 @@ fun QuizPeriod2Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateContraceptivo(true)
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
@@ -72,9 +84,11 @@ fun QuizPeriod2Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateContraceptivo(false)
+                onSkipNext() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
+            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text("Não", fontSize = 16.sp)
@@ -90,7 +104,7 @@ fun QuizPeriod2ScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            QuizPeriod2Screen()
+            QuizPeriod2Screen(onNextClick = {}, onSkipNext = {})
         }
     }
 }

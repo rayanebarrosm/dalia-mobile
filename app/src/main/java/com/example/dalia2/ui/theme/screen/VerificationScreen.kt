@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,10 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
@@ -62,7 +65,7 @@ fun VerificationScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Start
             )
-            Text("Envaimso um codigo de verificação para você.")
+            Text("Enviamos um codigo de verificação para você.")
 
             Spacer(modifier = Modifier.height(24.dp))
 

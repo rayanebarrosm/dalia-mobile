@@ -1,15 +1,20 @@
 package com.example.dalia2
 
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 // implementar viewModel para o salvamento no banco de dados
 fun saveData(month: Int, weeks: Int) {
@@ -26,6 +31,8 @@ fun AppNavigation() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val viewmodelSearch: SearchViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 
 
     // Lista de rotas onde a barra deve aparecer
@@ -97,9 +104,9 @@ fun AppNavigation() {
         }
 
         composable("quizAge") {
-            QuizAgeScreen(
+            QuizAgeScreen(viewModel = viewmodelSearch,
                 onNextClick = {
-                    navController.navigate("quizMode")
+                    navController.navigate("quizPeriod-1")
                 }
             )
         }
@@ -119,6 +126,9 @@ fun AppNavigation() {
             QuizPregnant1Screen(
                 onNextClick = {
                     navController.navigate("quizPregnant-2")
+                },
+                onSkipNext = {
+                    navController.navigate("quizPregnant-3")
                 }
             )
         }
@@ -159,22 +169,25 @@ fun AppNavigation() {
 
         composable("quizPeriod-1") {
             QuizPeriod1Screen(
-                onNextClick = {
-                    navController.navigate("quizPeriod-2")
-                }
-            )
+                viewModel = viewmodelSearch,
+                onNextClick = {navController.navigate("quizPeriod-2")})
         }
 
         composable("quizPeriod-2") {
             QuizPeriod2Screen(
+                viewModel = viewmodelSearch,
                 onNextClick = {
                     navController.navigate("quizPeriod-3")
+                },
+                onSkipNext = {
+                    navController.navigate("quizPeriod-4")
                 }
             )
         }
 
         composable("quizPeriod-3") {
             QuizPeriod3Screen(
+                viewModel = viewmodelSearch,
                 onNextClick = {
                     navController.navigate("quizPeriod-4")
                 }
@@ -183,6 +196,7 @@ fun AppNavigation() {
 
         composable("quizPeriod-4") {
             QuizPeriod4Screen(
+                viewModel = viewmodelSearch,
                 onNextClick = {
                     navController.navigate("quizPeriod-5")
                 }
@@ -191,8 +205,15 @@ fun AppNavigation() {
 
         composable("quizPeriod-5") {
             QuizPeriod5Screen(
-                onNextClick = { factor ->
-                    saveFactor(factor)
+                onNextClick = {
+                    navController.navigate("quizPeriod-6")
+                }
+            )
+        }
+        composable("quizPeriod-6") {
+            QuizPeriod6Screen(
+                viewModel= viewmodelSearch,
+                onNextClick = {
                     navController.navigate("home")
                 }
             )

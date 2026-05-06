@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,13 +24,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 @Composable
 fun QuizPeriod3Screen(
+    viewModel: SearchViewModel,
     onNextClick: () -> Unit = {}
 ){
     Column(
@@ -61,29 +65,35 @@ fun QuizPeriod3Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateTypeContraceptive("Pilula")
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Anticoncepcional", fontSize = 16.sp)
+            Text("Pilula", fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateTypeContraceptive("Implanon")
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Implante", fontSize = 16.sp)
+            Text("Implanon", fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateTypeContraceptive("Diu")
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
@@ -94,23 +104,14 @@ fun QuizPeriod3Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateTypeContraceptive("Preservativo")
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text("Preservativo", fontSize = 16.sp)
-        }
-
-        Spacer(modifier = Modifier.height(25.dp))
-
-        Button(
-            onClick = onNextClick,
-            modifier = Modifier.size(width = 304.dp, height = 44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("Pílula do dia seguinte", fontSize = 16.sp)
         }
     }
 }
@@ -123,7 +124,7 @@ fun QuizPeriod3ScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            QuizPeriod3Screen()
+            //QuizPeriod3Screen
         }
     }
 }
