@@ -59,14 +59,6 @@ data class MeuItem(
 
 )
 
-val medicosDisponiveis = remember {
-    listOf(
-        MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
-        MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
-        MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
-        MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
-    )
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -78,6 +70,15 @@ fun HomeScreen(
         MeuItem(2, "Hoje", "Hoje", isClickable = true, destination = "register"),
         MeuItem(3, "Amanhã", "Amanhã", isClickable = false, destination = null)
     )
+
+    val medicosDisponiveis = remember {
+        listOf(
+            MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
+            MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
+            MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
+            MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
+        )
+    }
 
     var selectedDay by remember { mutableStateOf(meusDados[1]) }
 
