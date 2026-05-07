@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -25,8 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
+import com.example.dalia2.ui.theme.Black
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
+import com.example.dalia2.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,26 +83,14 @@ fun EditProfileScreen(
                         )
                     }
                 },
-                actions = {
-                    // Botão Salvar
-                    TextButton(
-                        onClick = { validateAndSave() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Salvar",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Salvar", fontSize = 14.sp)
-                    }
-                },
+
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = PinkButton,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
+                    containerColor = White,
+                    titleContentColor = Color.Black,
+                    navigationIconContentColor = Color.Black,
                     actionIconContentColor = Color.White
                 )
+
             )
         }
     ) { paddingValues ->
@@ -118,10 +109,10 @@ fun EditProfileScreen(
                     )
                 )
         ) {
-            // Espaço para o conteúdo não ficar colado no topo
+
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Imagem do perfil (mesmo estilo)
+            // Imagem do perfil
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -171,12 +162,12 @@ fun EditProfileScreen(
                         text = "Informações Pessoais",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = PinkButton
+                        color = Black
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ⭐ NOME - SOMENTE LEITURA (não editável)
+                    // NOME
                     OutlinedTextField(
                         value = name,
                         onValueChange = {},
@@ -192,7 +183,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // ⭐ IDADE - SOMENTE LEITURA (não editável)
+                    // IDADE
                     OutlinedTextField(
                         value = age,
                         onValueChange = {},
@@ -208,7 +199,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // ⭐ EMAIL - EDITÁVEL
+                    // EMAIL - mudavel
                     OutlinedTextField(
                         value = email,
                         onValueChange = {
@@ -217,7 +208,7 @@ fun EditProfileScreen(
                         },
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = zKeyboardOptions(keyboardType = KeyboardType.Email),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         isError = emailError != null,
                         supportingText = {
                             if (emailError != null) {
@@ -233,7 +224,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // ⭐ TELEFONE - EDITÁVEL (novo campo)
+                    // TELEFONE
                     OutlinedTextField(
                         value = phone,
                         onValueChange = { phone = it },
@@ -264,6 +255,17 @@ fun EditProfileScreen(
                             color = Color.Gray
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    Button(
+                        onClick = {/*salvar*/ },
+                        modifier = Modifier.size(width = 304.dp, height = 44.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Text("Salvar", fontSize = 16.sp)
+                    }
                 }
             }
 
@@ -279,7 +281,7 @@ fun EditProfileScreenPreview() {
         EditProfileScreen(
             initialName = "Usuária Teste",
             initialEmail = "usuaria@email.com",
-            initialAge = "25",
+            initialAge = "19",
             initialPhone = "(11) 99999-9999"
         )
     }
