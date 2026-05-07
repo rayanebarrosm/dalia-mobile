@@ -207,32 +207,6 @@ fun ForumScreen() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "Médicos disponíveis",
-            modifier = Modifier.padding(horizontal = 16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Black
-        )
-        Text(
-            text = "Agende uma consulta com nossos especialistas",
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-            fontSize = 12.sp,
-            color = Color(0xFF888888)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            items(medicosDisponiveis) { medico ->
-                DoctorCardHorizontal(medico = medico)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -344,76 +318,6 @@ fun PostCard(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("${post.comentarios}", fontSize = 11.sp, color = Color(0xFF999999))
                 }
-            }
-        }
-    }
-}
-
-// Componente do médico (mantido igual)
-@Composable
-fun DoctorCardHorizontal(medico: MedicoData) {
-    Card(
-        modifier = Modifier
-            .width(240.dp)
-            .clickable { /* Agendar consulta */ },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(BlueButton.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = null,
-                    tint = BlueButton,
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = medico.nome,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = medico.especialidade,
-                fontSize = 13.sp,
-                color = BlueButton,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = medico.crm,
-                fontSize = 11.sp,
-                color = Color(0xFF888888),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = { /* Agendar consulta */ },
-                colors = ButtonDefaults.buttonColors(containerColor = BlueButton),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Agendar", fontSize = 13.sp, color = White)
             }
         }
     }

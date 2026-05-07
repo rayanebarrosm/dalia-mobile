@@ -29,7 +29,6 @@ import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
-import com.example.dalia2.ui.theme.White
 
 
 data class LanguageOption(
@@ -116,7 +115,7 @@ fun ProfileScreen(
                         Text(text = "Informações", fontSize = 20.sp,  fontWeight = FontWeight.SemiBold);
 
                         Button(
-                            onClick = { /* tela activity*/ },
+                            onClick = onEditarClick,
                             colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
                         ) {
                             Text("Editar", color = Color.Black)

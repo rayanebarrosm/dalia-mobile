@@ -33,6 +33,7 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import java.time.LocalDate
 import java.time.YearMonth
+import com.example.dalia2.ui.theme.Bege
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +57,19 @@ fun CalendarScreen(
         firstDayOfWeek = firstDayOfWeekFromLocale()
     )
 
+
+Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFB7DAD8),
+                        Color(0xFFBED7ED)
+                    )
+                )
+            )
+    ) {
     // Calendário que rola na Vertical
     VerticalCalendar(
         state = state,
@@ -77,6 +91,19 @@ fun CalendarScreen(
             )
         }
     )
+
+    Button(
+        onClick = {
+            onNextClick(),
+            modifier = Modifier.size(width = 304.dp, height = 44.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Bege),
+            shape = RoundedCornerShape(8.dp)
+        }
+    ){
+            Text("Preencher o registro diário", fontSize = 16.sp)
+        }
+
+
 }
 @Composable
 fun Day(day: CalendarDay, isMenstruacao: Boolean, isFertil: Boolean) {

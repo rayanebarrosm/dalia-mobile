@@ -91,6 +91,9 @@ fun AppNavigation() {
                 email = email,
                 onVerificationSucess = {
                     navController.navigate("startQuiz")
+                },
+                onBackClick ={
+                    navController.navigate("signup")
                 }
             )
         }
@@ -219,9 +222,30 @@ fun AppNavigation() {
             )
         }
 
+        composable("home"){
+            HomeScreen(
+                onNavigateToRegister = {
+                    navController.navigate("register")
+                },
+                onNavigateToCalendar = {
+                    navController.navigate("calendar")
+                }
+            )
+        }
+
+        composable("register") {
+            RegisterScreen()
+        }
+
+        composable ("calendar"){
+            /*onNavigateToRegister = {
+                navController.navigate("register")
+            }*/
+        }
+
+
         composable("profileScreen") {
            ProfileScreen(
-
             onEditarClick = {
                 navController.navigate("editProfileScreen")
             },
