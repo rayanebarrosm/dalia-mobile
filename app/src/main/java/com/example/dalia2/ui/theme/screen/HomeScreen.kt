@@ -34,6 +34,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.LightPink
@@ -43,8 +45,9 @@ import com.example.dalia2.ui.theme.Black
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.util.lerp // Importante para o lerp
+import androidx.compose.ui.util.lerp
 import com.example.dalia2.ui.theme.BlueButton
+import com.example.dalia2.ui.theme.White
 import kotlin.math.absoluteValue
 
 data class MeuItem(
@@ -53,8 +56,17 @@ data class MeuItem(
     val dia: String,
     val isClickable: Boolean = true,
     val destination: String? = null
-)
 
+)
+/*
+val medicosDisponiveis = remember {
+    listOf(
+        MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
+        MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
+        MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
+        MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
+    )
+}*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -75,7 +87,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Seção dos dias com gradiente
+        // Seção dos dias
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,8 +100,8 @@ fun HomeScreen(
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                Color(0xFFF7CFC3), // Centro
-                                Color(0xFFF7C4CF)  // Pontas
+                                Color(0xFFF7CFC3),
+                                Color(0xFFF7C4CF)
                             ),
                             radius = 600f,
                             center = Offset(0.5f, 0.5f)
@@ -106,11 +118,12 @@ fun HomeScreen(
                     itens = meusDados,
                     selectedDay = selectedDay,
                     onDaySelected = { day ->
+                        //Rotas
                         if (day.isClickable) {
                             selectedDay = day
                             when (day.destination) {
                                 "register" -> onNavigateToRegister()
-                                 "calendar" -> onNavigateToCalendar()
+                                "calendar" -> onNavigateToCalendar()
                             }
                         }
                     }
@@ -168,17 +181,44 @@ fun HomeScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Médicos disponíveis",
+                modifier = Modifier.padding(horizontal = 16.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Black
+            )
+            Text(
+                text = "Agende uma consulta com nossos especialistas",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                fontSize = 12.sp,
+                color = Color(0xFF888888)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+           /* LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(medicosDisponiveis) { medico ->
+                    DoctorCardHorizontal(medico = medico)
+                }
+            }*/
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
+//Dias de marcar o registro
 @Composable
 fun DayCarousel(
     itens: List<MeuItem>,
     selectedDay: MeuItem,
     onDaySelected: (MeuItem) -> Unit
 ) {
-    // Procuramos o índice do item selecionado para começar nele
     val initialPageIndex = itens.indexOf(selectedDay).coerceAtLeast(0)
 
     val pagerState = rememberPagerState(
@@ -197,13 +237,12 @@ fun DayCarousel(
 
         // Cálculo de escala e alpha para suavidade
         val pageOffset = (
-                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                ).absoluteValue
+                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
         val scale = lerp(0.8f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
         val alpha = lerp(0.6f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
 
-        // Box centralizadora para garantir simetria total
+        // Box centralizadora
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -273,7 +312,7 @@ fun Banner() {
                 Text(
                     text = "No Dália, nos importamos com a sua segurança, por isso gostaríamos que ficasse por dentro das leis que te defendem.",
                     fontSize = 14.sp,
-                    color = Color.White,
+                    color = Color.Black,
                     lineHeight = 20.sp
                 )
             }
@@ -287,10 +326,9 @@ fun Banner() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.hm_moca),
-                    contentDescription = "Gestante",
+                    contentDescription = "Moça demonstrando a força da mulher",
                     modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
+                        .size(150.dp),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -298,7 +336,7 @@ fun Banner() {
     }
 }
 
-// COMPONENTE: Card de Notícia
+// Card de Notícia
 @Composable
 fun NewsCard(
     imageResId: Int,
@@ -339,7 +377,7 @@ fun NewsCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Badge com a cor correspondente
+            // Badge
             Surface(
                 shape = RoundedCornerShape(4.dp),
                 color = Color.White
@@ -376,7 +414,7 @@ fun NewsCard(
     }
 }
 
-// COMPONENTE: Carrossel de Notícias
+// Carrossel de Notícias
 @Composable
 fun NewsCarousel(
     cardColor: Color,
@@ -422,6 +460,76 @@ fun NewsCarousel(
                 cardColor = cardColor,
                 onClick = { /* Navegar para detalhes */ }
             )
+        }
+    }
+}
+
+// Componente do médico
+@Composable
+fun DoctorCardHorizontal(medico: MedicoData) {
+    Card(
+        modifier = Modifier
+            .width(240.dp)
+            .clickable { /* Agendar consulta */ },
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(BlueButton.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    tint = BlueButton,
+                    modifier = Modifier.size(50.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = medico.nome,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = medico.especialidade,
+                fontSize = 13.sp,
+                color = BlueButton,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = medico.crm,
+                fontSize = 11.sp,
+                color = Color(0xFF888888),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                onClick = { /* Agendar consulta */ },
+                colors = ButtonDefaults.buttonColors(containerColor = BlueButton),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Agendar", fontSize = 13.sp, color = White)
+            }
         }
     }
 }
@@ -473,6 +581,7 @@ fun NavigationBarExample(modifier: Modifier = Modifier) {
     }
 }
 
+
 @Composable
 fun MainNavGraph(
     navController: NavHostController,
@@ -513,7 +622,10 @@ fun MainNavGraph(
     }
 }
 
-@Preview(showBackground = true)
+
+
+@Preview(widthDp = 400,
+    heightDp = 1800)
 @Composable
 fun HomeScreenPreview() {
     Dalia2Theme {

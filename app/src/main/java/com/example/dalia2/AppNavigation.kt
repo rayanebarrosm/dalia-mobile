@@ -5,10 +5,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -91,6 +89,9 @@ fun AppNavigation() {
                 email = email,
                 onVerificationSucess = {
                     navController.navigate("startQuiz")
+                },
+                onBackClick ={
+                    navController.navigate("signup")
                 }
             )
         }
@@ -219,6 +220,48 @@ fun AppNavigation() {
             )
         }
 
+        composable("home"){
+            HomeScreen(
+                onNavigateToRegister = {
+                    navController.navigate("register")
+                },
+                onNavigateToCalendar = {
+                    navController.navigate("calendar")
+                }
+            )
+        }
+
+        composable("register") {
+            RegisterScreen()
+        }
+
+        composable ("calendar"){
+            /*onNavigateToRegister = {
+                navController.navigate("register")
+            }*/
+        }
+
+
+        composable("profileScreen") {
+           ProfileScreen(
+            onEditarClick = {
+                navController.navigate("editProfileScreen")
+            },
+            onInformationClick ={
+                navController.navigate("informationScreen")
+            },
+            onHelpClick ={
+                navController.navigate("helpScreen")
+            },
+            onChangeModeClick ={
+                navController.navigate("Screen") //Vai ter que criar um view model para saber em qual modo está
+            }
+
+            )
+        }
+
+
+        //Button Navigation
 
         composable("home") {
             HomeScreen()

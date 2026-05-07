@@ -16,7 +16,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.App.SplashScreen" >
+        android:theme="@style/Theme.App.SplashScreen"
+        android:localeConfig="@xml/locales_config">
         <activity
             android:name=".ui.theme.screen.MainActivity"
             android:exported="false" />

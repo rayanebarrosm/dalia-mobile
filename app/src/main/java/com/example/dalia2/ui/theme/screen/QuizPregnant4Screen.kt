@@ -51,7 +51,8 @@ fun QuizPregnant4Screen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
