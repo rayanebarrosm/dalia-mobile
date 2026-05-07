@@ -95,15 +95,6 @@ fun ForumScreen() {
         combinaCategoria && combinaTexto
     }
 
-    val medicosDisponiveis = remember {
-        listOf(
-            MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
-            MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
-            MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
-            MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
-        )
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

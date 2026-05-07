@@ -218,7 +218,7 @@ fun EditProfileScreen(
                         },
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        keyboardOptions = zKeyboardOptions(keyboardType = KeyboardType.Email),
                         isError = emailError != null,
                         supportingText = {
                             if (emailError != null) {
