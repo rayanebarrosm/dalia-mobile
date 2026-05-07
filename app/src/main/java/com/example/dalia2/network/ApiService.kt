@@ -16,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 //Aqui fica os edpoitns criados na api
 interface ApiService {
@@ -49,17 +50,18 @@ interface ApiService {
         @Body request: SearchRequest
     ): Response<SearchResponse>
 
+    //CALENDARIO
     @Headers("Content-Type: application/json",
         "Accept: */*",
         "User-Agent: PostmanRuntime/7.41.1")
-    @POST("/api/user/search")
+    @PUT("/api/ciclo/registrar-menstruacao")
     suspend fun registrarMenstruacao(
     ): Response<CycleData>
 
     @Headers("Content-Type: application/json",
         "Accept: */*",
         "User-Agent: PostmanRuntime/7.41.1")
-    @POST("/api/user/search")
+    @GET("/api/ciclo/status")
     suspend fun getCycle(
     ): Response<CycleData>
 

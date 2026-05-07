@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.Printer
 import androidx.compose.ui.geometry.Rect
 import com.example.dalia2.data.SessionManager
+import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
 import com.example.dalia2.data.model.RefreshTokenRequest
@@ -124,4 +125,55 @@ class DaliaRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun registrarMenstruacao(): Result<CycleData> {
+        return try {
+            val response = api.registrarMenstruacao()
+            if (response.isSuccessful) {
+                val menstruacaoResponse = response.body()
+
+                if (menstruacaoResponse != null) {
+                    Result.success(menstruacaoResponse) // Agora os tipos batem!
+                } else {
+                    Result.failure(Exception("Corpo da resposta vazio"))
+                }
+            } else {
+                val errorCode = response.code()
+                val errorBody = response.errorBody()?.string() ?: "Erro desconhecido"
+                val cleanMessage = errorBody.replace(Regex("""\d{3}:\s*"""), "").replace("}", "")
+
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorBody")
+                Result.failure(Exception(cleanMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getCiclo(): Result<CycleData> {
+        return try {
+            val response = api.getCycle()
+            if (response.isSuccessful) {
+                val cicloResponse = response.body()
+
+                if (cicloResponse != null) {
+                    Result.success(cicloResponse) // Agora os tipos batem!
+                } else {
+                    Result.failure(Exception("Corpo da resposta vazio"))
+                }
+            } else {
+                val errorCode = response.code()
+                val errorBody = response.errorBody()?.string() ?: "Erro desconhecido"
+                val cleanMessage = errorBody.replace(Regex("""\d{3}:\s*"""), "").replace("}", "")
+
+                Log.e("REPO_ERROR", "Código: $errorCode | Mensagem: $errorBody")
+                Result.failure(Exception(cleanMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
 }
