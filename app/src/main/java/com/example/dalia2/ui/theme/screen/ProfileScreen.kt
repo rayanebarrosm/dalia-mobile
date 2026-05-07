@@ -69,6 +69,9 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Spacer(modifier = Modifier.height(25.dp))
+
             Text(text = "Perfil",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 24.sp
@@ -81,7 +84,8 @@ fun ProfileScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White)
+                    .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
