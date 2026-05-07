@@ -1,6 +1,5 @@
 package com.example.dalia2.ui.theme.viewmodel
 
-import android.net.Network
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,12 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dalia2.data.model.UserRegistre
-import com.example.dalia2.repository.DaliaRepository
-import dagger.hilt.android.HiltAndroidApp
+import com.example.dalia2.data.repository.DaliaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject

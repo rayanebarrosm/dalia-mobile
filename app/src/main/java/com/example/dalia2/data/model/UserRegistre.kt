@@ -1,6 +1,6 @@
 package com.example.dalia2.data.model
 
-import androidx.lifecycle.AtomicReference
+import java.time.LocalDate
 
 data class UserRegistre(
     val name: String,
@@ -37,4 +37,41 @@ data class TokensResponse(
 
 data class RefreshTokenRequest(
     val refreshToken:String
+)
+
+data class SearchRequest(
+    val age: Int,
+    val regularMenstruation: Boolean,
+    val useContraceptive: Boolean,
+    val contraceptiveType: String,
+    val lastMenstruationDay: String,
+    val cycleDuration: Int,
+    val menstruationDuration: Int,
+)
+
+data class SearchResponse(
+    val age: Int,
+    val regularMenstruation: Boolean,
+    val useContraceptive: Boolean,
+    val contraceptiveType: String,
+    val lastMenstruationDay: String,
+    val cycleDuration: Int,
+    val menstruationDuration: Int,
+    val cycleHistory: List<Int>,
+    val minCycleDuration: Int,
+    val maxCycleDuration: Int
+)
+
+data class CycleData(
+    val minCycleDuration: Int,
+    val maxCycleDuration: Int,
+    val lastMenstruationDay: LocalDate,
+    val isMenstruando: Boolean,
+    val isPeriodoFertil: Boolean,
+    val isOvulacao: Boolean,
+    val diasDeAtraso: Long,
+    val fimMenstruacao: LocalDate,
+    val inicioPeriodoFertil: LocalDate,
+    val fimPeriodoFertil: LocalDate,
+    val diaOvulacao: LocalDate
 )

@@ -16,16 +16,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.GrayButton
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 @Composable
 fun QuizPeriod5Screen(
+    viewModel: SearchViewModel = hiltViewModel(),
     onNextClick: (String) -> Unit = {} //Pode escolher mais de uma opção?
 ){
     var selectedOption by remember { mutableStateOf<String?>(null) }
+    
 
     Column(
         modifier = Modifier

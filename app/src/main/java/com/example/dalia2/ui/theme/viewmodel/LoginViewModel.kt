@@ -7,17 +7,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dalia2.data.model.LoginRequest
-import com.example.dalia2.repository.DaliaRepository
+import com.example.dalia2.data.repository.DaliaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repository: DaliaRepository
+    private val repository: DaliaRepository,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(LoginRequest("", ""))
 

@@ -16,18 +16,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dalia2.R
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dalia2.ui.theme.Dalia2Theme
+import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.Purple
 import com.example.dalia2.ui.theme.White
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
+import java.net.URLEncoder
 
 @Composable
 fun QuizAgeScreen(
-    onNextClick: (String) -> Unit = {} //Passa a idade
+    viewModel: SearchViewModel,
+    onNextClick: () -> Unit //Passa a idade
 ){
-
-    var selectedAge by remember { mutableStateOf<String?>(null) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,76 +62,55 @@ fun QuizAgeScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(18.dp) // Espaço fixo entre os botões
+        Button(
+            onClick = {
+                viewModel.updateAge(17)
+                onNextClick() },
+            modifier = Modifier.size(width = 304.dp, height = 44.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            AgeButton(
-                text = "Menor de 18 anos",
-                isSelected = selectedAge == "Menor de 18 anos",
-                onClick = { selectedAge = "Menor de 18 anos" }
-            )
-
-            AgeButton(
-                text = "18 a 30 anos",
-                isSelected = selectedAge == "18 a 30 anos",
-                onClick = { selectedAge = "18 a 30 anos" }
-            )
-
-            AgeButton(
-                text = "31 a 45 anos",
-                isSelected = selectedAge == "31 a 45 anos",
-                onClick = { selectedAge = "31 a 45 anos" }
-            )
-
-            AgeButton(
-                text = "Maior de 45 anos",
-                isSelected = selectedAge == "Maior de 45 anos",
-                onClick = { selectedAge = "Maior de 45 anos" }
-            )
+            Text("Menor de 18 anos", fontSize = 16.sp)
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(25.dp))
 
         Button(
             onClick = {
-                selectedAge?.let { age ->
-                    onNextClick(age)  // Passa a idade selecionada
-                }
-            },
+                viewModel.updateAge(25)
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PinkButton,  contentColor = Color.White),
-            shape = RoundedCornerShape(8.dp),
-            enabled = selectedAge != null
+            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Selecionar", fontSize = 16.sp)
+            Text("18 a 30", fontSize = 16.sp)
         }
-    }
-}
 
-@Composable
-fun AgeButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-){
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .width(304.dp)
-            .height(44.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Purple else White,
-            contentColor = if(isSelected) Color.White else Color.Black
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
+        Spacer(modifier = Modifier.height(25.dp))
+
+        Button(
+            onClick = {
+                viewModel.updateAge(35)
+                onNextClick() },
+            modifier = Modifier.size(width = 304.dp, height = 44.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("31 a 45 anos", fontSize = 16.sp)
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+
+        Button(
+            onClick = {
+                viewModel.updateAge(45)
+                onNextClick() },
+            modifier = Modifier.size(width = 304.dp, height = 44.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("Mais de 45 anos", fontSize = 16.sp)
+        }
     }
 }
 
@@ -136,6 +118,7 @@ fun AgeButton(
 @Composable
 fun QuizAgeScreenPreview() {
     Dalia2Theme {
-        QuizAgeScreen()
+        //QuizAgeScreen{
+
     }
 }

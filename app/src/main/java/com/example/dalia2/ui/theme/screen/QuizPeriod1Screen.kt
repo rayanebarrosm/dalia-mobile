@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,14 +24,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
+import com.example.dalia2.ui.theme.viewmodel.LoginViewModel
+import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
+import java.net.URLEncoder
 
 @Composable
 fun QuizPeriod1Screen(
-    onNextClick: () -> Unit = {}
+    viewModel: SearchViewModel,
+    onNextClick: () -> Unit
 ){
     Column(
         modifier = Modifier
@@ -52,25 +59,19 @@ fun QuizPeriod1Screen(
         Spacer(modifier = Modifier.height(25.dp))
 
         Text(
-            text = "Previsível ou com variações?",
+            text = "Seu ciclo é regular??",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = "Nos diga se seu ciclo é regular",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateCicloRegular(true)
+                onNextClick()
+            },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GrayButton),
             shape = RoundedCornerShape(8.dp)
@@ -81,7 +82,9 @@ fun QuizPeriod1Screen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateCicloRegular(false)
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)
@@ -92,7 +95,9 @@ fun QuizPeriod1Screen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onNextClick,
+            onClick = {
+                viewModel.updateCicloRegular(false)
+                onNextClick() },
             modifier = Modifier.size(width = 304.dp, height = 44.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
             shape = RoundedCornerShape(8.dp)
@@ -110,7 +115,7 @@ fun QuizPeriod1ScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            QuizPeriod1Screen()
+            //QuizPeriod1Screen{}
         }
     }
 }
