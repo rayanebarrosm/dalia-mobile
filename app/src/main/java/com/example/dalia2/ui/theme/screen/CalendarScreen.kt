@@ -3,25 +3,19 @@ package com.example.dalia2.ui.theme.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.kizitonwose.calendar.compose.VerticalCalendar
@@ -49,6 +43,7 @@ fun CalendarScreen(
 ) {
     val menstruacao by viewModel.diasMenstruacao.collectAsState()
     val fertil by viewModel.diasFertil.collectAsState()
+    val ovulacao by viewModel.diaOvulacao.collectAsState()
     val hoje = remember{LocalDate.now()}
 
     val currentMonth = remember { YearMonth.now() }
@@ -61,54 +56,66 @@ fun CalendarScreen(
         firstVisibleMonth = currentMonth,
         firstDayOfWeek = firstDayOfWeekFromLocale()
     )
-    Scaffold(
-        bottomBar = {
-            Button(
-                onClick = { viewModel.registrarMenstruacao() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
-
-            ) {
-                Text("Registrar Menstruação Hoje", color = Color.White)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
+                Button(
+                    onClick = { viewModel.registrarMenstruacao() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .padding(bottom = 120.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                ) {
+                    Text("Registrar Menstruação Hoje", color = Color.White)
+                }
             }
+        ) { paddingValues ->
+            VerticalCalendar(
+                modifier = Modifier.padding(paddingValues),
+                state = state,
+                dayContent = { day ->
+                    Day(
+                        day = day,
+                        isMenstruacao = menstruacao.contains(day.date),
+                        isOvulacao = ovulacao == day.date,
+                        isFertil = fertil.contains(day.date),
+                        isHoje = hoje == day.date
+                    )
+                },
+                monthHeader = { month ->
+                    val title = "${month.yearMonth.month.name} ${month.yearMonth.year}"
+                    Text(
+                        text = title.replaceFirstChar { it.uppercase() },
+                        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black
+                    )
+                }
+            )
         }
-    ) { paddingValues ->
-        VerticalCalendar(
-            modifier = Modifier.padding(paddingValues),
-            state = state,
-            dayContent = { day ->
-              Day(
-                    day = day,
-                    isMenstruacao = menstruacao.contains(day.date),
-                    isFertil = fertil.contains(day.date),
-                    isHoje = hoje == day.date
-                )
-            },
-            monthHeader = { month ->
-                val title = "${month.yearMonth.month.name} ${month.yearMonth.year}"
-               Text(
-                    text = title.replaceFirstChar { it.uppercase() },
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                   color = Color.Black
-                )
-            }
-        )
     }
 }
 @Composable
-fun Day(day: CalendarDay, isMenstruacao: Boolean, isFertil: Boolean, isHoje: Boolean) {
+fun Day(
+    day: CalendarDay,
+    isMenstruacao: Boolean,
+    isFertil: Boolean,
+    isHoje: Boolean,
+    isOvulacao: Boolean
+) {
     Box(
         modifier = Modifier
             .aspectRatio(1f) // Deixa o dia quadradinho
             .padding(2.dp)
             .background(
                 color = when {
-                    isMenstruacao -> Color(0xFFFFD1DC) // Rosa Dalia
-                    isFertil -> Color(0xFFE0F7FA)      // Azul Bebê
+                    isMenstruacao -> Color(0xFFFFB3B3)
+                    isOvulacao -> Color(0xFF63D2FF)// Rosa Dalia
+                    isFertil -> Color(0xFFC4F8FF) // Azul Bebê
+                     //escuro
                     else -> Color.Transparent
                 },
                 shape = CircleShape
@@ -130,7 +137,7 @@ fun Day(day: CalendarDay, isMenstruacao: Boolean, isFertil: Boolean, isHoje: Boo
 @Preview(showBackground = true)
 @Composable
 fun CalendarPreview() {
-    CalendarScreen(
-        viewModel()
-    )
+    Dalia2Theme {
+        CalendarScreen()
+    }
 }

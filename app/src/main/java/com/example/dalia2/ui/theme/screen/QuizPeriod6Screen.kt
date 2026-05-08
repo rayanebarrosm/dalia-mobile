@@ -76,20 +76,18 @@ fun QuizPeriod6Screen(
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            // Texto menor de orientação
-            Text(
-                text = "O intervalo deve ser entre 21 e 35 dias",
-                fontSize = 14.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
             // Pergunta Principal
             Text(
                 text = "Qual a duração média do seu ciclo?",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 24.dp)
+            )
+            Text(
+                text = "O intervalo deve ser entre 21 e 35 dias",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             OutlinedTextField(

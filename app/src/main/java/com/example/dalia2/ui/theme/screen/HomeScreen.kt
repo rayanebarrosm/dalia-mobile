@@ -57,16 +57,22 @@ data class MeuItem(
     val isClickable: Boolean = true,
     val destination: String? = null
 
+)/*
+data class MedicoData(
+    val id: Int,
+    val nome: String,
+    val area: String,
+    val crm: String
 )
 
-val medicosDisponiveis = remember {
+val medicosDisponiveis = remember(MedicoData) {
     listOf(
         MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
         MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
         MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
         MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
     )
-}
+}*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -197,7 +203,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyRow(
+           /* LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
@@ -205,7 +211,7 @@ fun HomeScreen(
                 items(medicosDisponiveis) { medico ->
                     DoctorCardHorizontal(medico = medico)
                 }
-            }
+            }*/
 
             Spacer(modifier = Modifier.height(32.dp))
         }

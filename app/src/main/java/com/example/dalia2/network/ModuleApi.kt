@@ -3,6 +3,9 @@ package com.example.dalia2.network
 import android.content.Context
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import com.example.dalia2.data.SessionManager
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +15,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -49,13 +53,23 @@ class ModuleApi {
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            // Isso aqui ensina o GSON a ler o formato yyyy-MM-dd do seu Java
+            .registerTypeAdapter(LocalDate::class.java, JsonDeserializer { json, _, _ ->
+                LocalDate.parse(json.asJsonPrimitive.asString)
+            })
+            .create()
+    }
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson) : Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://daliaapi.onrender.com/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
     }

@@ -4,6 +4,8 @@ import android.util.Log
 import android.util.Printer
 import androidx.compose.ui.geometry.Rect
 import com.example.dalia2.data.SessionManager
+import com.example.dalia2.data.local.CicloDao
+import com.example.dalia2.data.local.CicloEntity
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
@@ -21,7 +23,8 @@ import javax.inject.Inject
 
 class DaliaRepository @Inject constructor(
     private val api: ApiService,
-    private val sessionM: SessionManager
+    private val sessionM: SessionManager,
+    private val cicloDao: CicloDao
 ) {
     suspend fun createUser(userRegistre: UserRegistre): Result<UserResponse> {
         return try {
@@ -133,6 +136,18 @@ class DaliaRepository @Inject constructor(
                 val menstruacaoResponse = response.body()
 
                 if (menstruacaoResponse != null) {
+                    //Salva Local
+                    val entity = CicloEntity(
+                        minCycleDuration = menstruacaoResponse.minCycleDuration,
+                        maxCycleDuration = menstruacaoResponse.maxCycleDuration,
+                        lastMenstruationDay = menstruacaoResponse.lastMenstruationDay.toString(),
+                        diasDeAtraso = menstruacaoResponse.diasDeAtraso,
+                        fimMenstruacao = menstruacaoResponse.fimMenstruacao.toString(),
+                        inicioPeriodoFertil = menstruacaoResponse.inicioPeriodoFertil.toString(),
+                        fimPeriodoFertil = menstruacaoResponse.fimPeriodoFertil.toString(),
+                        diaOvulacao = menstruacaoResponse.diaOvulacao.toString()
+                    )
+                    cicloDao.update(entity)
                     Result.success(menstruacaoResponse) // Agora os tipos batem!
                 } else {
                     Result.failure(Exception("Corpo da resposta vazio"))
@@ -158,6 +173,7 @@ class DaliaRepository @Inject constructor(
                 val cicloResponse = response.body()
 
                 if (cicloResponse != null) {
+
                     Result.success(cicloResponse) // Agora os tipos batem!
                 } else {
                     Result.failure(Exception("Corpo da resposta vazio"))

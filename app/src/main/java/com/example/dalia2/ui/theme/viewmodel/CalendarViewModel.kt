@@ -10,6 +10,7 @@ import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.repository.DaliaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -17,11 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val repository: DaliaRepository
+    private val repository: DaliaRepository,
 ) : ViewModel() {
     var registroSucesso by mutableStateOf(false)
         private set
-
+    var isLoading by mutableStateOf<Boolean?>(false)
     var errorMessage by mutableStateOf<String?>(null)
         private set
     var cycleData by mutableStateOf<CycleData?>(null)
@@ -33,11 +34,17 @@ class CalendarViewModel @Inject constructor(
     private val _diasFertil = MutableStateFlow<List<LocalDate>>(emptyList())
     val diasFertil = _diasFertil.asStateFlow()
 
+    private val _diaOvulacao = MutableStateFlow<LocalDate?>(null)
+    val diaOvulacao = _diaOvulacao.asStateFlow()
+
+
     init{
         carregarStatusHoje()
     }
+
     fun carregarStatusHoje() {
         viewModelScope.launch {
+            isLoading = true
             try {
                 val response = repository.getCiclo()
                 if (response.isSuccess) {
@@ -47,38 +54,48 @@ class CalendarViewModel @Inject constructor(
                 } else {
                     registroSucesso = false
                 }
-                errorMessage = repository.registrarMenstruacao().exceptionOrNull()?.message
+                errorMessage = repository.getCiclo().exceptionOrNull()?.message
                 Log.d("API_ERROR", "Erro: ")
             } catch (e: Exception) {
                 errorMessage = "Falha na conexão"
                 Log.d("API_ERROR", e.message.toString())
             } finally {
-                registroSucesso = false
+                isLoading = false
             }
         }
     }
     fun registrarMenstruacao() {
         viewModelScope.launch {
+            isLoading = true
             try {
                 val response = repository.registrarMenstruacao()
                 if (response.isSuccess) {
                     val dados = response.getOrNull()
                     listarDatas(dados)
                 }
-                errorMessage = repository.getCiclo().exceptionOrNull()?.message
+                errorMessage = repository.registrarMenstruacao().exceptionOrNull()?.message
                 Log.d("API_ERROR", "Erro: ")
             } catch (e: Exception) {
                 errorMessage = "Falha na conexão"
                 Log.d("API_ERROR", e.message.toString())
+            }finally {
+                isLoading = false
             }
         }
     }
     private fun listarDatas(cycleData: CycleData?) {
         if (cycleData == null) return
+        val inicioM = cycleData.lastMenstruationDay
+        var fimM = cycleData.fimMenstruacao
 
+        if (fimM.isBefore(inicioM)) {
+            fimM = inicioM.plusDays(4)
+        }
         _diasMenstruacao.value = gerarListaDatas(cycleData.lastMenstruationDay, cycleData.fimMenstruacao)
 
         _diasFertil.value = gerarListaDatas(cycleData.inicioPeriodoFertil, cycleData.fimPeriodoFertil)
+        _diaOvulacao.value = cycleData.diaOvulacao
+
     }
 
     private fun gerarListaDatas(inicio: LocalDate, fim: LocalDate): List<LocalDate> {
