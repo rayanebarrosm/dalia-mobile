@@ -1,5 +1,6 @@
 package com.example.dalia2.ui.theme.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -30,7 +31,7 @@ import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
 @Composable
 fun ForumScreen(
     viewModel: ForumViewModel,
-    onNavigateToCreatePost: () -> Unit ={},
+    onToCreatePost: () -> Unit ={},
     onNavigateToPostDetail: (String) -> Unit = {}
 ) {
     var textoBusca by remember { mutableStateOf("") }
@@ -38,8 +39,6 @@ fun ForumScreen(
     val postsFiltrados = postsAPI.filter {
         (it.title?.contains(textoBusca, ignoreCase = true) ?: false) || textoBusca.isEmpty()
     }
-
-
 
     LaunchedEffect(Unit) {
         viewModel.carregarPosts()
@@ -62,9 +61,11 @@ fun ForumScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Botão redondo de criar post (estilo FAB mas no topo)
             IconButton(
-                onClick = onNavigateToCreatePost,
+                onClick = {
+                    Log.d("ForumScreen", "Botão de criar post pressionado")
+                    onToCreatePost()
+                },
                 modifier = Modifier
                     .size(48.dp)
                     .background(BlueButton, CircleShape)
@@ -90,7 +91,11 @@ fun ForumScreen(
             items(postsFiltrados) { post ->
                 VerticalPostCard(
                     post = post,
-                    onClick = { onNavigateToPostDetail(post.idPost ?: "") }
+                    viewModel = viewModel,
+                    onClick = {
+                        Log.d("ForumScreen", "Post pressionado: ${post.idPost}")
+                        onNavigateToPostDetail(post.idPost)
+                    }
                 )
             }
         }
@@ -100,6 +105,7 @@ fun ForumScreen(
 @Composable
 fun VerticalPostCard(
     post: Posts, // Usando seu modelo de dados real do Pots.kt
+    viewModel: ForumViewModel,
     onClick: () -> Unit
 ) {
     Card(
@@ -130,12 +136,17 @@ fun VerticalPostCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.ThumbUp,
-                    "",
-                    tint = BlueButton,
-                    modifier = Modifier.size(14.dp)
-                )
+                IconButton(
+                    onClick = {
+                        Log.d("ForumScreen", "Botão de curtir")
+                        viewModel.likePost(post.idPost)
+                    },
+                    modifier = Modifier
+                        .size(14.dp)
+                ) {
+                    Icon(Icons.Default.ThumbUp, contentDescription = "Like", tint = BlueButton)
+                }
+
                 Text("${post.likesValue}", modifier = Modifier.padding(start = 4.dp), fontSize = 12.sp)
 
                 Spacer(modifier = Modifier.width(16.dp))

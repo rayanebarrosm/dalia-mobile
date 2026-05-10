@@ -1,10 +1,12 @@
 package com.example.dalia2.ui.theme.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.Posts
 import com.example.dalia2.data.repository.DaliaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,9 +26,7 @@ class ForumViewModel  @Inject constructor(
     var isLoading by mutableStateOf<Boolean?>(false)
     var errorMessage by mutableStateOf<String?>(null)
         private set
-    init{
-        carregarPosts()
-    }
+
 
     private val _posts = MutableStateFlow<List<Posts>>(emptyList())
     val posts = _posts.asStateFlow()
@@ -42,23 +42,62 @@ class ForumViewModel  @Inject constructor(
                 errorMessage = it.message
             }
         isLoading = false
-    }
+    }}
 
-    fun criarNovoPost(titulo: String, conteudo: String, onSuccess: () -> Unit) {
+    fun criarNovoPost(titulo: String, conteudo: String, onSucess: () -> Unit) {
         viewModelScope.launch {
+            isLoading = true
+
+            val timestamp = Instant.now().toString()
+
             val novoPost = Posts(
                 idPost = "", // API gera
                 idUser = "id_USER",
                 title = titulo,
                 content = conteudo,
                 likesValue = 0,
-                createdAt = "${LocalDate.now()}",
+                createdAt = timestamp,
                 comments = emptyList()
             )
-            repository.createPost(novoPost)
-            carregarPosts()
-            onSuccess()// Recarrega a lista
+            repository.createPost(novoPost).onSuccess { it
+                carregarPosts()
+                onSucess()
+            }.onFailure {
+                Log.d("API_ERROR","falaha ao criar: ${it.message}")
+            }
+             isLoading = true
         }
     }
-}
+
+    fun addComentario(postId: String, comentario: String) {
+        viewModelScope.launch{
+
+            val timestamp = Instant.now().toString()
+
+            val novoComentario = Comments(
+                idComment = "",
+                idUser = "id_USER",
+                comment = comentario,
+                createdAt = timestamp
+            )
+
+            val response =repository.createComment(postId, novoComentario)
+            if (response.isSuccess) {
+                Log.d("API_ERROR","falaha ao criar: ${response.getOrNull()}")
+                carregarPosts()
+            }
+            isLoading = true
+        }
+    }
+
+    fun likePost(postId: String){
+        viewModelScope.launch {
+            val response = repository.likePost(postId)
+            if(response.isSuccess){
+                Log.d("API_ERROR","falaha ao curtir: ${response.getOrNull()}")
+                carregarPosts()
+            }
+            isLoading = true
+        }
+    }
 }

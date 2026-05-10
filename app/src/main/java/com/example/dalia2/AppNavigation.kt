@@ -1,6 +1,7 @@
 package com.example.dalia2
 
 import CreatePostScreen
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -271,29 +272,32 @@ fun AppNavigation() {
         composable("forum") {
             ForumScreen(
                 viewModel = viewModelForum,
-                onNavigateToCreatePost = {
+                onToCreatePost = {
                     navController.navigate("createPost")
                 },
-                onNavigateToPostDetail = { postId ->
-                    navController.navigate("postDetail/$postId")
+                onNavigateToPostDetail = { idPost ->
+                    navController.navigate("postDetail/$idPost")
                 }
             )
         }
-/*
+
         composable("createPost") {
             CreatePostScreen(
-                viewModel = viewModelForum
-            )
-        }
-
-        composable("postDetail/{postId}") { backStackEntry ->
-            val postId = backStackEntry.arguments?.getString("postId")
-            PostDetailScreen(
-                postId = postId,
+                viewModel = viewModelForum,
                 onBack = { navController.popBackStack() }
             )
         }
-*/
+
+        composable("postDetail/{idPost}") { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("idPost") ?: ""
+            Log.d("PostDetailScreen", "ID do post: $postId")
+            PostDetailScreen(
+                postId = postId,
+                viewModel = viewModelForum,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable("informationScreen") {
             RegisterScreen()
         }
@@ -306,22 +310,22 @@ fun AppNavigation() {
 
         //Button Navigation
 
-        composable("home") {
+        /*composable("home") {
             HomeScreen(
                 viewModel = viewmodelCalendar
             )
-        }
+        }*/
         composable("calendar") {
             CalendarScreen()
         }
         composable("bot") {
             DaliaBotScreen()
         }
-        composable("forum") {
+        /*composable("forum") {
             ForumScreen(
                 viewModel = viewModelForum
             )
-        }
+        }*/
         composable("settings") {
             ProfileScreen()
         }

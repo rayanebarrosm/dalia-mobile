@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.Rect
 import com.example.dalia2.data.SessionManager
 import com.example.dalia2.data.local.CicloDao
 import com.example.dalia2.data.local.CicloEntity
+import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
@@ -208,11 +209,41 @@ class DaliaRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {
-                Result.failure(Exception("Erro em criar"))
+                Result.failure(Exception("Erro em criar post"))
             }
         } catch (e: Exception) {
             Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
             Result.failure(e)
         }
     }
+    suspend fun createComment(idPost: String, comment: Comments): Result<Unit> {
+        return try {
+            val response = api.createComment(idPost, comment)
+            Log.d("API_RESPONSE", "Olha o id: $idPost")
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Erro em criar comentario"))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun likePost(idPost: String): Result<Unit>{
+        return try{
+            val response =api.likePost(idPost)
+            Log.d("API_RESPONSE", "Like no: $idPost")
+            if(response.isSuccessful){
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error em dar like"))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
 }

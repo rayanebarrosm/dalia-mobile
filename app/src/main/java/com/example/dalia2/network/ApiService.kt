@@ -1,5 +1,6 @@
 package com.example.dalia2.network
 
+import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
@@ -79,12 +80,18 @@ interface ApiService {
 
     @PUT("/api/posts/{idPost}/like")
     suspend fun likePost (
-        @Path("idPost") idPost: Int
+        @Path("idPost") idPost: String,
     ): Response<Unit>
 
     @PUT("/api/posts/{idPost}/unlike")
     suspend fun unlikePosy (
-        @Path("idPost") idPost: Int
+        @Path("idPost") idPost: String
+    ): Response<Unit>
+
+    @POST("/api/posts/{postId}/addComment")
+    suspend fun createComment (
+        @Path ("postId") idPost: String,
+        @Body request: Comments
     ): Response<Unit>
 
 }
