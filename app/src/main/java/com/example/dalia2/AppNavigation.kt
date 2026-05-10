@@ -7,11 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
+import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 // implementar viewModel para o salvamento no banco de dados
@@ -31,6 +33,7 @@ fun AppNavigation() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val viewmodelSearch: SearchViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    val viewmodelCalendar: CalendarViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 
 
     // Lista de rotas onde a barra deve aparecer
@@ -222,6 +225,7 @@ fun AppNavigation() {
 
         composable("home"){
             HomeScreen(
+                viewModel = viewmodelCalendar,
                 onNavigateToRegister = {
                     navController.navigate("register")
                 },
@@ -264,7 +268,9 @@ fun AppNavigation() {
         //Button Navigation
 
         composable("home") {
-            HomeScreen()
+            HomeScreen(
+                viewModel = viewmodelCalendar
+            )
         }
         composable("calendar") {
             CalendarScreen()
