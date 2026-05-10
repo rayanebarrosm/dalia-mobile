@@ -51,6 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dalia2.ui.theme.BlueButton
 import com.example.dalia2.ui.theme.White
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
+import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 
@@ -61,6 +62,13 @@ data class MeuItem(
     val isClickable: Boolean = true,
     val destination: String? = null
 
+)
+
+data class MedicoData(
+    val id: Int,
+    val nome: String,
+    val especialidade: String,
+    val crm: String
 )
 /*
 val medicosDisponiveis = remember {
@@ -627,8 +635,15 @@ fun MainNavGraph(
             DaliaBotScreen()
         }
 
-        composable(Destination.Forum.route) {
-            ForumScreen()
+        composable(Destination.Forum.route) {backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(navController.graph.startDestinationId)
+            }
+            val sharedViewModel: ForumViewModel = hiltViewModel(parentEntry)
+
+            ForumScreen(
+                viewModel = sharedViewModel
+            )
         }
 
         composable(Destination.Settings.route) {

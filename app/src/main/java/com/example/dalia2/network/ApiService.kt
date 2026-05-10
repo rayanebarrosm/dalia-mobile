@@ -17,6 +17,7 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 //Aqui fica os edpoitns criados na api
 interface ApiService {
@@ -71,5 +72,19 @@ interface ApiService {
     suspend fun getPosts (
     ): List<Posts>
 
+    @POST("/api/posts/create")
+    suspend fun createPost (
+        @Body request: Posts
+    ): Response<Unit>
+
+    @PUT("/api/posts/{idPost}/like")
+    suspend fun likePost (
+        @Path("idPost") idPost: Int
+    ): Response<Unit>
+
+    @PUT("/api/posts/{idPost}/unlike")
+    suspend fun unlikePosy (
+        @Path("idPost") idPost: Int
+    ): Response<Unit>
 
 }

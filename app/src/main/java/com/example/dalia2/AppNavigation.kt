@@ -1,5 +1,6 @@
 package com.example.dalia2
 
+import CreatePostScreen
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
+import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
 import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
 
 // implementar viewModel para o salvamento no banco de dados
@@ -34,6 +36,8 @@ fun AppNavigation() {
 
     val viewmodelSearch: SearchViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
     val viewmodelCalendar: CalendarViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    val viewModelForum: ForumViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+
 
 
     // Lista de rotas onde a barra deve aparecer
@@ -264,6 +268,41 @@ fun AppNavigation() {
             )
         }
 
+        composable("forum") {
+            ForumScreen(
+                viewModel = viewModelForum,
+                onNavigateToCreatePost = {
+                    navController.navigate("createPost")
+                },
+                onNavigateToPostDetail = { postId ->
+                    navController.navigate("postDetail/$postId")
+                }
+            )
+        }
+/*
+        composable("createPost") {
+            CreatePostScreen(
+                viewModel = viewModelForum
+            )
+        }
+
+        composable("postDetail/{postId}") { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("postId")
+            PostDetailScreen(
+                postId = postId,
+                onBack = { navController.popBackStack() }
+            )
+        }
+*/
+        composable("informationScreen") {
+            RegisterScreen()
+        }
+
+
+        composable("editProfileScreen") {
+            RegisterScreen()
+        }
+
 
         //Button Navigation
 
@@ -279,7 +318,9 @@ fun AppNavigation() {
             DaliaBotScreen()
         }
         composable("forum") {
-            ForumScreen()
+            ForumScreen(
+                viewModel = viewModelForum
+            )
         }
         composable("settings") {
             ProfileScreen()

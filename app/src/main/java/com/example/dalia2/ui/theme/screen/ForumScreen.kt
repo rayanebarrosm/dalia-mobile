@@ -2,371 +2,151 @@ package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dalia2.data.model.Posts
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.BlueButton
-import com.example.dalia2.ui.theme.White
 import com.example.dalia2.ui.theme.Black
-
-data class PostData(
-    val id: Int,
-    val titulo: String,
-    val categoria: String,
-    val descricao: String = "",
-    val curtidas: Int = 0,
-    val comentarios: Int = 0
-)
-
-data class MedicoData(
-    val id: Int,
-    val nome: String,
-    val especialidade: String,
-    val crm: String
-)
+import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForumScreen() {
-    val categorias = listOf("Geral", "Saúde física", "Saúde mental", "Menstruação", "Gestação")
-    var categoriaSelecionada by remember { mutableStateOf("Geral") }
+fun ForumScreen(
+    viewModel: ForumViewModel,
+    onNavigateToCreatePost: () -> Unit ={},
+    onNavigateToPostDetail: (String) -> Unit = {}
+) {
     var textoBusca by remember { mutableStateOf("") }
-
-    var todosOsPosts by remember {
-        mutableStateOf(
-            listOf(
-                PostData(0, "Importância do sono para gestantes", "Saúde física", "Descubra como uma boa noite de sono pode beneficiar você e seu bebê.", 0, 0),
-                PostData(1, "Como lidar com a ansiedade na gestação", "Saúde mental", "Técnicas simples para controlar a ansiedade durante a gravidez.", 0, 0),
-                PostData(2, "Dúvidas comuns sobre o ciclo menstrual", "Menstruação", "Esclareça as principais dúvidas sobre o ciclo menstrual.", 0, 0),
-                PostData(3, "Dicas de alimentação saudável na gestação", "Gestação", "Alimentos que não podem faltar na sua dieta durante a gestação.", 0, 0),
-                PostData(4, "Exercícios para aliviar cólicas menstruais", "Menstruação", "Movimentos simples que ajudam a reduzir as cólicas.", 0, 0),
-                PostData(5, "Quando procurar um médico?", "Geral", "Sinais de alerta que indicam a necessidade de ajuda profissional.", 0, 0)
-            )
-        )
+    val postsAPI by viewModel.posts.collectAsState()
+    val postsFiltrados = postsAPI.filter {
+        (it.title?.contains(textoBusca, ignoreCase = true) ?: false) || textoBusca.isEmpty()
     }
 
-    // Função para adicionar curtida
-    fun adicionarCurtida(postId: Int) {
-        todosOsPosts = todosOsPosts.map { post ->
-            if (post.id == postId) {
-                post.copy(curtidas = post.curtidas + 1)
-            } else {
-                post
-            }
-        }
-    }
 
-    // Função para adicionar comentário
-    fun adicionarComentario(postId: Int) {
-        todosOsPosts = todosOsPosts.map { post ->
-            if (post.id == postId) {
-                post.copy(comentarios = post.comentarios + 1)
-            } else {
-                post
-            }
-        }
-    }
 
-    val postMaisFamoso = todosOsPosts.maxByOrNull { it.curtidas } ?: todosOsPosts.first()
-
-    val postsFiltrados = todosOsPosts.filter { post ->
-        val combinaCategoria = (categoriaSelecionada == "Geral" || post.categoria == categoriaSelecionada)
-        val combinaTexto = post.titulo.contains(textoBusca, ignoreCase = true) ||
-                post.descricao.contains(textoBusca, ignoreCase = true) ||
-                textoBusca.isEmpty()
-        combinaCategoria && combinaTexto
+    LaunchedEffect(Unit) {
+        viewModel.carregarPosts()
     }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(Color.White)
-    ) {
-        SearchForum(
-            query = textoBusca,
-            onQueryChange = { textoBusca = it }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        FeaturedPostCard(post = postMaisFamoso)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Categorias",
-            modifier = Modifier.padding(horizontal = 16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Black
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+        .fillMaxSize()
+        .background(Color.White)
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(categorias) { categoria ->
-                val isSelected = categoria == categoriaSelecionada
-                Surface(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .clickable { categoriaSelecionada = categoria },
-                    color = if (isSelected) BlueButton else Color.White,
-                    shadowElevation = if (isSelected) 0.dp else 1.dp,
-                    tonalElevation = 0.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = categoria,
-                            color = if (isSelected) White else Color(0xFF555555),
-                            fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-                        )
-                    }
-                }
+            Box(modifier = Modifier.weight(1f)) {
+                SearchForum(query = textoBusca, onQueryChange = { textoBusca = it })
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Botão redondo de criar post (estilo FAB mas no topo)
+            IconButton(
+                onClick = onNavigateToCreatePost,
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(BlueButton, CircleShape)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Criar Post", tint = Color.White)
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Matérias para você",
-            modifier = Modifier.padding(horizontal = 16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Black
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (postsFiltrados.isEmpty()) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
-            ) {
-                Text(
-                    text = "Nenhuma matéria encontrada",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(32.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray
-                )
-            }
-        } else {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(postsFiltrados) { post ->
-                    PostCard(
-                        post = post,
-                        onCurtir = { adicionarCurtida(post.id) },
-                        onComentar = { adicionarComentario(post.id) }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            if (postsFiltrados.isEmpty() && !viewModel.isLoading!!) {
+                item {
+                    Text(
+                        "Nenhum post encontrado.",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = Color.Gray
                     )
                 }
             }
+            items(postsFiltrados) { post ->
+                VerticalPostCard(
+                    post = post,
+                    onClick = { onNavigateToPostDetail(post.idPost ?: "") }
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
     }
 }
 
 @Composable
-fun PostCard(
-    post: PostData,
-    onCurtir: () -> Unit = {},
-    onComentar: () -> Unit = {}
+fun VerticalPostCard(
+    post: Posts, // Usando seu modelo de dados real do Pots.kt
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .width(280.dp)
-            .clickable { /* Navegar para detalhes do post */ },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(BlueButton.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                val icon = when (post.categoria) {
-                    "Saúde física" -> Icons.Default.FitnessCenter
-                    "Saúde mental" -> Icons.Default.Psychology
-                    "Menstruação" -> Icons.Default.WaterDrop
-                    "Gestação" -> Icons.Default.PregnantWoman
-                    else -> Icons.Default.Article
-                }
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = BlueButton,
-                    modifier = Modifier.size(60.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Surface(
-                shape = RoundedCornerShape(4.dp),
-                color = BlueButton.copy(alpha = 0.12f)
-            ) {
-                Text(
-                    text = post.categoria,
-                    fontSize = 10.sp,
-                    color = BlueButton,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = post.titulo,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                maxLines = 2,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Text(
-                text = post.descricao,
-                fontSize = 12.sp,
-                color = Color(0xFF666666),
-                maxLines = 2,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { onCurtir() }
-                ) {
-                    Icon(
-                        Icons.Default.ThumbUp,
-                        contentDescription = null,
-                        tint = Color(0xFF999999),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("${post.curtidas}", fontSize = 11.sp, color = Color(0xFF999999))
-                }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { onComentar() }
-                ) {
-                    Icon(
-                        Icons.Default.Comment,
-                        contentDescription = null,
-                        tint = Color(0xFF999999),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("${post.comentarios}", fontSize = 11.sp, color = Color(0xFF999999))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun FeaturedPostCard(post: PostData) {
-    Card(
-        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFECE0F4))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "⭐ DESTAQUE",
-                fontSize = 10.sp,
-                color = Color.Black.copy(alpha = 0.6f),
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = post.titulo,
+                text = post.title ?: "",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Black
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Default.ThumbUp,
-                        contentDescription = null,
-                        tint = Color(0xFF6B3FA0),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("${post.curtidas}", fontSize = 12.sp, color = Color(0xFF6B3FA0))
-                }
+            Text(
+                text = post.content ?: "",
+                fontSize = 14.sp,
+                color = Color.DarkGray,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Default.Comment,
-                        contentDescription = null,
-                        tint = Color(0xFF6B3FA0),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("${post.comentarios}", fontSize = 12.sp, color = Color(0xFF6B3FA0))
-                }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.ThumbUp,
+                    "",
+                    tint = BlueButton,
+                    modifier = Modifier.size(14.dp)
+                )
+                Text("${post.likesValue}", modifier = Modifier.padding(start = 4.dp), fontSize = 12.sp)
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Icon(
+                    Icons.Default.Comment,
+                    "",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(14.dp)
+                )
+                Text("${post.comments?.size ?: 0} comentários", modifier = Modifier.padding(start = 4.dp), fontSize = 12.sp)
             }
         }
     }
@@ -400,38 +180,6 @@ fun SearchForum(query: String, onQueryChange: (String) -> Unit) {
     )
 }
 
-// EXEMPLO DE PÁGINA DE POST (adicione isso ao seu projeto)
-@Composable
-fun PostDetailScreen(postId: Int, onBackClick: () -> Unit) {
-    // Aqui você buscaria o post pelo ID
-    // Por enquanto um exemplo estático
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
-        }
-
-        Text(
-            text = "Título do Post",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Conteúdo do post aqui...",
-            fontSize = 16.sp,
-            color = Color.Black
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun ForumScreenPreview() {
@@ -440,7 +188,7 @@ fun ForumScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = Color.White
         ) {
-            ForumScreen()
+            //ForumScreen()
         }
     }
 }

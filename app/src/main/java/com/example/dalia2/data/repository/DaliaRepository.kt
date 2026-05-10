@@ -192,4 +192,27 @@ class DaliaRepository @Inject constructor(
         }
     }
 
+    suspend fun getPosts(): Result<List<Posts>> {
+        return try {
+            val response = api.getPosts()
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun createPost(post: Posts): Result<Unit> {
+        return try {
+            val response = api.createPost(post)
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Erro em criar"))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
 }
