@@ -246,4 +246,19 @@ class DaliaRepository @Inject constructor(
         }
     }
 
+    suspend fun unlikePost(idPost: String): Result<Unit>{
+        return try{
+            val response =api.unLikePost(idPost)
+            Log.d("API_RESPONSE", "unlike no: $idPost")
+            if(response.isSuccessful){
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error em dar like"))
+            }
+        } catch (e: Exception) {
+            Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
+            Result.failure(e)
+        }
+    }
+
 }

@@ -90,14 +90,16 @@ class ForumViewModel  @Inject constructor(
         }
     }
 
-    fun likePost(postId: String){
+    fun toggleLike(postId: String?, isAlreadyLiked: Boolean) {
+        if (postId == null) return
+
         viewModelScope.launch {
-            val response = repository.likePost(postId)
-            if(response.isSuccess){
-                Log.d("API_ERROR","falaha ao curtir: ${response.getOrNull()}")
-                carregarPosts()
+            if (isAlreadyLiked) {
+                repository.unlikePost(postId)
+            } else {
+                repository.likePost(postId)
             }
-            isLoading = true
+            carregarPosts()
         }
     }
 }

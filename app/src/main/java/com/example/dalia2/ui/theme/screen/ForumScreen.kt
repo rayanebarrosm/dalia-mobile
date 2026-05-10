@@ -135,20 +135,31 @@ fun VerticalPostCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            var isLiked by remember { mutableStateOf(false) }
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = {
-                        Log.d("ForumScreen", "Botão de curtir")
-                        viewModel.likePost(post.idPost)
+                        Log.d("ForumScreen", "Toggle Like no post: ${post.idPost}")
+                        isLiked = !isLiked // Muda o estado local
+                        viewModel.toggleLike(post.idPost, !isLiked) // Chama a lógica do ViewModel
                     },
-                    modifier = Modifier
-                        .size(14.dp)
+                    modifier = Modifier.size(20.dp) // Aumentei um pouco para facilitar o clique
                 ) {
-                    Icon(Icons.Default.ThumbUp, contentDescription = "Like", tint = BlueButton)
+                    Icon(
+                        imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Default.ThumbUpOffAlt,
+                        contentDescription = "Like",
+                        // Se estiver curtido, fica Azul, se não, fica Cinza
+                        tint = if (isLiked) BlueButton else Color.Gray
+                    )
                 }
 
-                Text("${post.likesValue}", modifier = Modifier.padding(start = 4.dp), fontSize = 12.sp)
-
+                Text(
+                    text = "${post.likesValue}",
+                    modifier = Modifier.padding(start = 4.dp),
+                    fontSize = 12.sp,
+                    color = if (isLiked) BlueButton else Color.Gray
+                )
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Icon(

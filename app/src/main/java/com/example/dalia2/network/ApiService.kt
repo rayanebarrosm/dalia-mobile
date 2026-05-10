@@ -84,7 +84,7 @@ interface ApiService {
     ): Response<Unit>
 
     @PUT("/api/posts/{idPost}/unlike")
-    suspend fun unlikePosy (
+    suspend fun unLikePost (
         @Path("idPost") idPost: String
     ): Response<Unit>
 
