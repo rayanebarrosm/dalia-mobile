@@ -4,8 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -29,6 +30,8 @@ import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
+import com.example.dalia2.ui.theme.viewmodel.ProfileViewModel
+import com.example.dalia2.ui.theme.viewmodel.ProfileUiState
 
 
 data class LanguageOption(
@@ -38,6 +41,7 @@ data class LanguageOption(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    viewModel: ProfileViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
     //Variaveis para mudar de tela
     onEditarClick: () -> Unit = {},
     onInformationClick: () -> Unit = {},
@@ -45,11 +49,18 @@ fun ProfileScreen(
     onChangeModeClick: () -> Unit = {},
 ) {
 
+    val state by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
     val context = LocalContext.current
     var showModeDialog by remember { mutableStateOf(false) }
     var isPregnancyMode by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserProfile()
+    }
 
     Box(
         modifier = Modifier
@@ -130,17 +141,17 @@ fun ProfileScreen(
 
                     InfoSection(
                         label = "Nome",
-                        value = "ee"//state.name//dado do banco
+                        value = state.name.ifBlank { "Carregando..." }
                     );
 
                     InfoSection(
                         label = "Email",
-                        value = "ee@gmail.com"//state.email//dado do banco de dados
+                        value = state.email.ifBlank { "Carregando..." } //dado do banco de dados
                     );
 
                     InfoSection(
                         label = "Idade",
-                        value = "19"//state.age//dado do banco de dados
+                        value = state.age
                     );
 
 
@@ -189,14 +200,6 @@ fun ProfileScreen(
                         text = "Informações pessoais",
                         icon = R.drawable.person,
                         onClick = onInformationClick,
-                        backgroundColor = LightPink
-
-                    )
-
-                    SettingsButton(
-                        text = "Planos de pagamento",
-                        icon = R.drawable.cifrao_icon,
-                        onClick = { /* Ver planos */ },
                         backgroundColor = LightPink
 
                     )

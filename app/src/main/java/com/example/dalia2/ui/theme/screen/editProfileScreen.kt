@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -281,7 +282,7 @@ fun EditProfileScreenPreview() {
             initialName = "Usuária Teste",
             initialEmail = "usuaria@email.com",
             initialAge = "19",
-            initialPhone = "(11) 99999-9999"
+            initialPhone = "(00) 0000-0000"
         )
     }
 }

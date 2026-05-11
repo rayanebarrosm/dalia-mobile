@@ -48,11 +48,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dalia2.ui.theme.BlueButton
-import com.example.dalia2.ui.theme.White
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
 import java.time.LocalDate
+ import com.example.dalia2.ui.theme.BlueButton
+import com.example.dalia2.ui.theme.White
 import kotlin.math.absoluteValue
 
 data class MeuItem(
@@ -64,46 +64,33 @@ data class MeuItem(
 
 )
 
-data class MedicoData(
+/*
+*data class MedicoData(
     val id: Int,
     val nome: String,
     val especialidade: String,
     val crm: String
-)
-/*
-val medicosDisponiveis = remember {
-    listOf(
-        MedicoData(1, "Dra. Ana Silva", "Ginecologista", "CRM 12345/SP"),
-        MedicoData(2, "Dra. Beatriz Santos", "Obstetra", "CRM 67890/SP"),
-        MedicoData(3, "Dr. Carlos Mendes", "Endocrinologista", "CRM 54321/RJ"),
-        MedicoData(4, "Dra. Fernanda Lima", "Psicóloga Perinatal", "CRP 98765/SP")
-    )
-}*/
+) */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: CalendarViewModel,
     onNavigateToRegister: () -> Unit = {},
     onNavigateToCalendar: () -> Unit = {}
 ) {
+
     val hoje = LocalDate.now()
     val ontem = hoje.minusDays(1)
     val amanha = hoje.plusDays(1)
 
-   val itensCarrossel = remember {
-       listOf(
-           MeuItem(1, "Ontem", ontem.toString()),
-           MeuItem(2, "Hoje", hoje.toString()),
-           MeuItem(3, "Amanhã", amanha.toString())
-       )
-   }
+    val meusDados = listOf(
+        MeuItem(1, "Ontem", "Ontem", isClickable = true, destination = "calendar"),
+        MeuItem(2, "Hoje", "Hoje", isClickable = true, destination = "register"),
+        MeuItem(3, "Amanhã", "Amanhã", isClickable = false, destination = null)
+    )
 
-    var selectedDay by remember { mutableStateOf(itensCarrossel[1]) }
+    var selectedDay by remember { mutableStateOf(meusDados[1]) }
 
     val scrollState = rememberScrollState()
-    LaunchedEffect(Unit) {
-        viewModel.carregarStatusHoje()
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -137,7 +124,7 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center //
             ) {
                 DayCarousel(
-                    itens = itensCarrossel,
+                    itens = meusDados,
                     selectedDay = selectedDay,
                     viewModel = viewModel,
                     onDaySelected = { day ->
@@ -219,7 +206,7 @@ fun HomeScreen(
                 color = Color(0xFF888888)
             )
             Spacer(modifier = Modifier.height(8.dp))
-/*
+
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -228,7 +215,7 @@ fun HomeScreen(
                 items(medicosDisponiveis) { medico ->
                     DoctorCardHorizontal(medico = medico)
                 }
-            }*/
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -240,8 +227,8 @@ fun HomeScreen(
 fun DayCarousel(
     itens: List<MeuItem>,
     selectedDay: MeuItem,
-    onDaySelected: (MeuItem) -> Unit,
-    viewModel: CalendarViewModel
+    onDaySelected: (MeuItem) -> Unit*/,
+    viewModel: CalendarViewModel*/
 ) {
     val initialPageIndex = itens.indexOf(selectedDay).coerceAtLeast(0)
 
@@ -258,42 +245,54 @@ fun DayCarousel(
     ) { page ->
         val item = itens[page]
         val dataDoCard = LocalDate.parse(item.dia) // Transforma a string de volta em data
-        val status = viewModel.getStatusDoDia(dataDoCard) // BUSCA O STATUS REAL
-
+        val status = viewModel.getStatusDoDia(dataDoCard)
         val isSelected = pagerState.currentPage == page
 
-        // LOGICA DE CORES LIGADA AO CALENDÁRIO
-        val corDeFundo = if (status == "MENSTRUAÇÃO") {
-            Color(0xFFFF7979)
-            } else if (status == "OVULAÇÃO") {
-            Color(0xFF30ACFF)
-            }  else if (status == "PERIODO FERTIL") {
-            Color(0xFF93FFEE)
-             }else {
-                if (isSelected) Color(0xFFFFF5E6) else Color.White
-        }
+        // Cálculo de escala e alpha para suavidade
+        val pageOffset = (
+                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
-        Surface(
-            modifier = Modifier
-                .width(150.dp)
-                .height(210.dp)
-                .clickable { onDaySelected(item) },
-            shape = CircleShape,
-            color = corDeFundo, // APLICANDO A COR DINÂMICA
-            shadowElevation = if (isSelected) 8.dp else 0.dp
+        val scale = lerp(0.8f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+        val alpha = lerp(0.6f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+
+        // Box centralizadora
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center) {
-                Text(
-                    text = item.titulo.uppercase(),
-                    color = if (status == "MENSTRUAÇÃO") Color.Red else Color.Black
-                )
+            Surface(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(210.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        this.alpha = alpha
+                    }
+                    .clickable(enabled = item.isClickable) { onDaySelected(item) },
+                shape = CircleShape,
+                color = if (isSelected) Color(0xFFFFF5E6) else Color.White.copy(alpha = 0.8f),
+                shadowElevation = if (isSelected) 8.dp else 0.dp
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = item.titulo.uppercase(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = if (isSelected) Color.Black else Color.Gray
+                    )
 
-                // Texto do Status embaixo (ex: "Menstruação")
-                if (status.isNotEmpty()) {
-                    Text(text = status, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                } else if (isSelected && item.titulo == "Hoje") {
-                    Text(text = "Como você está?", fontSize = 11.sp)
+                    if (isSelected && item.titulo == "Hoje") {
+                        Text(
+                            text = "Como você está?",
+                            fontSize = 12.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -607,17 +606,14 @@ fun MainNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(Destination.Home.route) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(navController.graph.startDestinationId)
-            }
-            val sharedViewModel: CalendarViewModel = hiltViewModel(parentEntry)
+        composable(Destination.Home.route) {
             HomeScreen(
                 viewModel = sharedViewModel,
                 onNavigateToRegister = { navController.navigate("register") },
-                onNavigateToCalendar = { navController.navigate(Destination.Calendar.route) },
+                onNavigateToCalendar = { navController.navigate(Destination.Calendar.route) }
             )
         }
+
         composable(Destination.Calendar.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(navController.graph.startDestinationId)
@@ -635,7 +631,8 @@ fun MainNavGraph(
             DaliaBotScreen()
         }
 
-        composable(Destination.Forum.route) {backStackEntry ->
+        composable(Destination.Forum.route) {
+                backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(navController.graph.startDestinationId)
             }
@@ -663,6 +660,6 @@ fun MainNavGraph(
 @Composable
 fun HomeScreenPreview() {
     Dalia2Theme {
-        //HomeScreen()
+        HomeScreen()
     }
 }

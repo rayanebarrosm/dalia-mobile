@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dalia2.data.local.CicloEntity
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.repository.DaliaRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.lifecycle.
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +26,8 @@ class CalendarViewModel @Inject constructor(
         private set
     var isLoading by mutableStateOf<Boolean?>(false)
     var errorMessage by mutableStateOf<String?>(null)
+        private set
+    var cycleData by mutableStateOf<CycleData?>(null)
         private set
 
     private val _diasMenstruacao = MutableStateFlow<List<LocalDate>>(emptyList())
@@ -110,9 +112,9 @@ class CalendarViewModel @Inject constructor(
 
     fun getStatusDoDia(data: LocalDate): String {
         return when {
-            _diasMenstruacao.value.contains(data)-> "MENSTRUAÇÃO"
+            _diasMenstruacao.value.contains(data) -> "MENSTRUAÇÃO"
             _diaOvulacao.value == data -> "OVULAÇÃO"
-            _diasFertil.value.contains(data)-> "PERIODO FERTIL"
+            _diasFertil.value.contains(data) -> "PERIODO FERTIL"
             else -> ""
         }
     }

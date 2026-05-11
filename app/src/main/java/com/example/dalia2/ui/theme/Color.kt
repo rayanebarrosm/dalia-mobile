@@ -2,7 +2,7 @@ package com.example.dalia2.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PinkButton = Color(0xFFFF8AA8)
+val PinkButton = Color(0xFFF6ADD5)
 val GrayButton = Color(0xFFA7A2A3)
 val BlueButton = Color(0xFFC1D5F6)
 val Purple = Color(0xFFD6BFF3)

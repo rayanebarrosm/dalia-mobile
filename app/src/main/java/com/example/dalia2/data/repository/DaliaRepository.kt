@@ -10,10 +10,12 @@ import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
+import com.example.dalia2.data.model.ProfileCombinedResponse
 import com.example.dalia2.data.model.RefreshTokenRequest
 import com.example.dalia2.data.model.SearchRequest
 import com.example.dalia2.data.model.SearchResponse
 import com.example.dalia2.data.model.TokensResponse
+import com.example.dalia2.data.model.UserFullProfile
 import com.example.dalia2.data.model.UserRegistre
 import com.example.dalia2.data.model.UserResponse
 import com.example.dalia2.data.model.VerificationRequest
@@ -175,8 +177,7 @@ class DaliaRepository @Inject constructor(
 
                 if (cicloResponse != null) {
 
-                    Result.success(cicloResponse) // Agora os tipos batem!
-                } else {
+                    Result.success(cicloResponse)                } else {
                     Result.failure(Exception("Corpo da resposta vazio"))
                 }
             } else {
@@ -191,6 +192,9 @@ class DaliaRepository @Inject constructor(
             Log.e("REPO_EXCEPTION", "Falha catastrófica", e)
             Result.failure(e)
         }
+
+
+
     }
 
     suspend fun getPosts(): Result<List<Posts>> {
@@ -261,4 +265,30 @@ class DaliaRepository @Inject constructor(
         }
     }
 
+    suspend fun getUserFullProfile(): Result<UserFullProfile> {
+        return try {
+            val response = api.getUserProfile()
+            if (response.isSuccessful) {
+                val body:  ProfileCombinedResponse? = response.body()
+                if (body != null) {
+                    Result.success(
+                        UserFullProfile(
+                            id = body.user.id,
+                            name = "${body.user.name} ${body.user.surname}",
+                            email = body.user.email,
+                            age = body.search.age,
+                            phone = "",
+                            isPregnancyMode = body.user.enable
+                        )
+                    )
+                } else {
+                    Result.failure(Exception("Corpo vazio"))
+                }
+            } else {
+                Result.failure(Exception("Erro na API: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

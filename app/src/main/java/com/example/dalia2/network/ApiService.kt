@@ -1,15 +1,6 @@
 package com.example.dalia2.network
 
-import com.example.dalia2.data.model.Comments
-import com.example.dalia2.data.model.CycleData
-import com.example.dalia2.data.model.LoginRequest
-import com.example.dalia2.data.model.Posts
-import com.example.dalia2.data.model.SearchRequest
-import com.example.dalia2.data.model.SearchResponse
-import com.example.dalia2.data.model.TokensResponse
-import com.example.dalia2.data.model.UserRegistre
-import com.example.dalia2.data.model.UserResponse
-import com.example.dalia2.data.model.VerificationRequest
+import com.example.dalia2.data.model.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -93,5 +84,10 @@ interface ApiService {
         @Path ("postId") idPost: String,
         @Body request: Comments
     ): Response<Unit>
+
+    //PERFIL
+    @GET("/api/perfil/perfilView")
+    suspend fun getUserProfile(): Response<ProfileCombinedResponse>
+
 
 }
