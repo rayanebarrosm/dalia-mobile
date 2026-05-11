@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -17,7 +16,7 @@ import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
-import com.example.dalia2.ui.theme.viewmodel.SearchViewModel
+import com.example.dalia2.ui.theme.viewmodel.QuizViewModel
 
 // implementar viewModel para o salvamento no banco de dados
 fun saveData(month: Int, weeks: Int) {
@@ -35,7 +34,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val viewmodelSearch: SearchViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    val viewmodelQuiz: QuizViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
     val viewmodelCalendar: CalendarViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
     val viewModelForum: ForumViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 
@@ -107,26 +106,17 @@ fun AppNavigation() {
         composable("startQuiz") {
             StartQuizScreen(
                 onStartClick = {
-                    navController.navigate("quizAge")
+                    navController.navigate("quizPeriod")
                 }
             )
         }
 
-        composable("quizAge") {
-            QuizAgeScreen(viewModel = viewmodelSearch,
-                onNextClick = {
-                    navController.navigate("quizPeriod-1")
-                }
-            )
-        }
-
-        composable("quizMode") {
-            QuizModeScreen(
-                onPregnantModeClick = {
-                    navController.navigate("quizPregnant-1")
-                },
-                onPeriodModeClick = {
-                    navController.navigate("quizPeriod-1")
+        composable("quizPeriod") {
+            QuizPeriodScreen(viewModel = viewmodelQuiz,
+                onQuizComplete = {
+                    navController.navigate("home") {
+                        popUpTo("quizPeriod"){inclusive = true}
+                    }
                 }
             )
         }
@@ -170,58 +160,6 @@ fun AppNavigation() {
 
         composable("quizPregnant-5") {
             QuizPregnant5Screen(
-                onNextClick = {
-                    navController.navigate("home")
-                }
-            )
-        }
-
-        composable("quizPeriod-1") {
-            QuizPeriod1Screen(
-                viewModel = viewmodelSearch,
-                onNextClick = {navController.navigate("quizPeriod-2")})
-        }
-
-        composable("quizPeriod-2") {
-            QuizPeriod2Screen(
-                viewModel = viewmodelSearch,
-                onNextClick = {
-                    navController.navigate("quizPeriod-3")
-                },
-                onSkipNext = {
-                    navController.navigate("quizPeriod-4")
-                }
-            )
-        }
-
-        composable("quizPeriod-3") {
-            QuizPeriod3Screen(
-                viewModel = viewmodelSearch,
-                onNextClick = {
-                    navController.navigate("quizPeriod-4")
-                }
-            )
-        }
-
-        composable("quizPeriod-4") {
-            QuizPeriod4Screen(
-                viewModel = viewmodelSearch,
-                onNextClick = {
-                    navController.navigate("quizPeriod-5")
-                }
-            )
-        }
-
-        composable("quizPeriod-5") {
-            QuizPeriod5Screen(
-                onNextClick = {
-                    navController.navigate("quizPeriod-6")
-                }
-            )
-        }
-        composable("quizPeriod-6") {
-            QuizPeriod6Screen(
-                viewModel= viewmodelSearch,
                 onNextClick = {
                     navController.navigate("home")
                 }
@@ -307,29 +245,17 @@ fun AppNavigation() {
             RegisterScreen()
         }
 
-
-        //Button Navigation
-
-        /*composable("home") {
-            HomeScreen(
-                viewModel = viewmodelCalendar
-            )
-        }*/
         composable("calendar") {
             CalendarScreen()
         }
+
         composable("bot") {
             DaliaBotScreen()
         }
-        /*composable("forum") {
-            ForumScreen(
-                viewModel = viewModelForum
-            )
-        }*/
+
         composable("settings") {
             ProfileScreen()
         }
 
-    }
-    }
+    }}
 }

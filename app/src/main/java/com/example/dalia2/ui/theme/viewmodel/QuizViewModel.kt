@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
+class QuizViewModel @Inject constructor(
     private val repository: DaliaRepository
 ) : ViewModel(){
     private val _uiState = MutableStateFlow(SearchRequest(0, false, false, "", "", 0, 0))
@@ -42,14 +42,26 @@ class SearchViewModel @Inject constructor(
     fun updateTypeContraceptive(contraceptiveType: String) {
         _uiState.update { it.copy(contraceptiveType = contraceptiveType) }
     }
-    fun updateMenstraucaoDia(lastMenstruationDay: String) {
+    fun updateMenstruacaoDia(lastMenstruationDay: String) {
         _uiState.update { it.copy(lastMenstruationDay = lastMenstruationDay) }
     }
     fun updateCicleDuration(cicleDuration: Int) {
         _uiState.update { it.copy(cycleDuration = cicleDuration) }
     }
 
-    fun onSearchFinish(){
+    // No seu SearchViewModel.kt
+    fun atualizarDadosQuiz(campo: String, valor: Any) {
+        when (campo) {
+            "idade" -> updateAge(valor as Int)
+            "cicloRegular" -> updateCicloRegular(valor as Boolean)
+            "contraceptivo" -> updateContraceptivo(valor as Boolean)
+            "tipoContraceptivo" -> updateTypeContraceptive(valor as String)
+            "ultimaMenstrucao" -> updateMenstruacaoDia(valor as String)
+            "duracaoCiclo" -> updateCicleDuration(valor as Int)
+        }
+    }
+
+    fun onQuizFinish(){
         errorMessage = null
         isLoading = true
         viewModelScope.launch {

@@ -257,7 +257,7 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors( containerColor = PinkButton)
                     ) {
-                        Text("Excluir conta")
+                        Text("Sair da conta")
                     }
                 }
             }
