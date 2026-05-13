@@ -1,8 +1,6 @@
 package com.example.dalia2.data.repository
 
 import android.util.Log
-import android.util.Printer
-import androidx.compose.ui.geometry.Rect
 import com.example.dalia2.data.SessionManager
 import com.example.dalia2.data.local.CicloDao
 import com.example.dalia2.data.local.CicloEntity
@@ -10,18 +8,16 @@ import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
-import com.example.dalia2.data.model.ProfileCombinedResponse
-import com.example.dalia2.data.model.RefreshTokenRequest
+import com.example.dalia2.data.model.ProfileRequest
 import com.example.dalia2.data.model.SearchRequest
 import com.example.dalia2.data.model.SearchResponse
 import com.example.dalia2.data.model.TokensResponse
-import com.example.dalia2.data.model.UserFullProfile
+import com.example.dalia2.data.model.UserData
 import com.example.dalia2.data.model.UserRegistre
 import com.example.dalia2.data.model.UserResponse
 import com.example.dalia2.data.model.VerificationRequest
+import com.example.dalia2.data.session.UserSession
 import com.example.dalia2.network.ApiService
-import org.jetbrains.annotations.Async
-import retrofit2.Response
 import javax.inject.Inject
 
 class DaliaRepository @Inject constructor(
@@ -265,27 +261,42 @@ class DaliaRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserFullProfile(): Result<UserFullProfile> {
+    suspend fun getUserFullProfile(): Result<ProfileRequest> {
+        UserSession.profileCache?.let {
+            return Result.success(it)
+        }
         return try {
-            val response = api.getUserProfile()
+            val response = api.getPerfil()
             if (response.isSuccessful) {
-                val body:  ProfileCombinedResponse? = response.body()
+                val body:  ProfileRequest? = response.body()
                 if (body != null) {
-                    Result.success(
-                        UserFullProfile(
-                            id = body.user.id,
-                            name = "${body.user.name} ${body.user.surname}",
-                            email = body.user.email,
-                            age = body.search.age,
-                            phone = "",
-                            isPregnancyMode = body.user.enable
-                        )
-                    )
+                    val data = response.body()!!
+                    UserSession.profileCache = data
+                    Result.success(data)
                 } else {
                     Result.failure(Exception("Corpo vazio"))
                 }
             } else {
                 Result.failure(Exception("Erro na API: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun updatePerfil(userDto: ProfileRequest): Result<UserData> {
+        return try {
+            val response = api.updatePerfil(userDto)
+            if (response.isSuccessful && response.body() != null) {
+                val updatedUser = response.body()!!
+
+                // 3. ATUALIZAÇÃO DO CONTEXTO: Sincroniza o cache com a nova info
+                UserSession.profileCache = UserSession.profileCache?.copy(
+                    user = updatedUser
+                )
+
+                Result.success(updatedUser)
+            } else {
+                Result.failure(Exception("Erro ao atualizar"))
             }
         } catch (e: Exception) {
             Result.failure(e)

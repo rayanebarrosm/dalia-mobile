@@ -13,6 +13,9 @@ import retrofit2.http.Path
 
 //Aqui fica os edpoitns criados na api
 interface ApiService {
+    @GET("/api/user/")
+    suspend fun onRender(
+    ): Response<Unit>
     //USER
     @POST("/api/user/criarUsuario")
     suspend fun createUser(
@@ -86,8 +89,12 @@ interface ApiService {
     ): Response<Unit>
 
     //PERFIL
-    @GET("/api/perfil/perfilView")
-    suspend fun getUserProfile(): Response<ProfileCombinedResponse>
+    @GET("api/perfil/perfilView")
+    suspend fun getPerfil(
+    ): Response<ProfileRequest>
 
-
+    @PUT("api/perfil/updatePerfil")
+    suspend fun updatePerfil(
+        @Body userRegistre: ProfileRequest
+    ): Response<UserData>
 }

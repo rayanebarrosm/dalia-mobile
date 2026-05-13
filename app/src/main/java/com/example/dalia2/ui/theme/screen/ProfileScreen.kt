@@ -25,13 +25,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
 import com.example.dalia2.ui.theme.viewmodel.ProfileViewModel
-import com.example.dalia2.ui.theme.viewmodel.ProfileUiState
 
 
 data class LanguageOption(
@@ -41,7 +42,7 @@ data class LanguageOption(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
+    viewModel: ProfileViewModel,
     //Variaveis para mudar de tela
     onEditarClick: () -> Unit = {},
     onInformationClick: () -> Unit = {},
@@ -49,7 +50,7 @@ fun ProfileScreen(
     onChangeModeClick: () -> Unit = {},
 ) {
 
-    val state by viewModel.uiState.collectAsState()
+    val state = viewModel._uiState
     val isLoading by viewModel.isLoading.collectAsState()
 
     val context = LocalContext.current
@@ -130,7 +131,9 @@ fun ProfileScreen(
                         Text(text = "Informações", fontSize = 20.sp,  fontWeight = FontWeight.SemiBold);
 
                         Button(
-                            onClick = onEditarClick,
+                            onClick = {
+                                Log.d("TESTE","botão editar clicado")
+                                onEditarClick()},
                             colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
                         ) {
                             Text("Editar", color = Color.Black)
@@ -141,20 +144,29 @@ fun ProfileScreen(
 
                     InfoSection(
                         label = "Nome",
-                        value = state.name.ifBlank { "Carregando..." }
+                        value = "${state?.user?.name} ${state?.user?.surname}".ifBlank { "Carregando..." }
                     );
 
                     InfoSection(
                         label = "Email",
-                        value = state.email.ifBlank { "Carregando..." } //dado do banco de dados
+                        value = state?.user?.email?.ifBlank { "Carregando..." } ?: ""  //dado do banco de dados
                     );
 
                     InfoSection(
                         label = "Idade",
-                        value = state.age
+                        value = state?.search?.age.toString()
                     );
 
-
+                    InfoSection(
+                        label = "Anticoncepcional",
+                        value = if (state?.search?.useContraceptive ?: true) "Sim" else "Não"
+                    )
+                    if(state?.search?.useContraceptive ?: true) {
+                        InfoSection(
+                            label = "Tipo de Anticoncepcional",
+                            value = state?.search?.contraceptiveType ?: ""
+                        )
+                    }
                 }
             }
 
@@ -401,6 +413,6 @@ fun SettingsButton(
 @Composable
 fun ProfileScreenPreview() {
     Dalia2Theme {
-        ProfileScreen()
+        //ProfileScreen()
     }
 }

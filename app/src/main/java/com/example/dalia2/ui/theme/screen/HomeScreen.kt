@@ -647,11 +647,15 @@ fun MainNavGraph(
         }
 
         composable(Destination.Settings.route) {
-            ProfileScreen()
+            ProfileScreen(
+                viewModel = hiltViewModel()
+            )
         }
 
         composable("register") {
-            RegisterScreen()
+            RegisterScreen(
+
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.dalia2.ui.theme.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -10,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,48 +22,43 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.R
+import com.example.dalia2.data.model.ProfileRequest
+import com.example.dalia2.data.model.SearchData
+import com.example.dalia2.data.model.UserData
 import com.example.dalia2.ui.theme.Black
-import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.White
+import com.example.dalia2.ui.theme.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
-    initialName: String = "",
-    initialEmail: String = "",
-    initialAge: String = "",
-    initialPhone: String = "",
-    onSaveClick: (email: String, phone: String) -> Unit = { _, _ -> },
+    viewModel: ProfileViewModel,
     onBackClick: () -> Unit = {}
 ) {
+    val state =viewModel._uiState
+
     // Estados editáveis
-    var email by remember { mutableStateOf(initialEmail) }
-    var phone by remember { mutableStateOf(initialPhone) }
+    var email by remember { mutableStateOf(state?.user?.email) }
+    var senha by remember { mutableStateOf("") } // Nova senha (opcional)
+    var idade by remember { mutableStateOf(state?.search?.age?.toString()?: "") }
+    var usaMetodo by remember { mutableStateOf(state?.search?.useContraceptive ?: false) }
+    var tipoMetodo by remember { mutableStateOf(state?.search?.contraceptiveType ?: "") }
+    var phone by remember { mutableStateOf("(11) 99999-9999") } // Local
 
-    // Estados não editáveis (somente leitura)
-    val name = initialName
-    val age = initialAge
+    val opcoesAnticoncepcional = listOf("Pílula", "DIU", "Injeção", "Implante", "Apenas Preservativo")
+    var expanded by remember { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
     // Estados de erro
     var emailError by remember { mutableStateOf<String?>(null) }
 
     // Função de validação
-    fun validateAndSave() {
-        emailError = when {
-            email.isBlank() -> "Email é obrigatório"
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Email inválido"
-            else -> null
-        }
-
-        if (emailError == null) {
-            onSaveClick(email, phone)
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -98,7 +93,7 @@ fun EditProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
@@ -169,11 +164,11 @@ fun EditProfileScreen(
 
                     // NOME
                     OutlinedTextField(
-                        value = name,
+                        value = "${state?.user?.name} ${state?.user?.surname}",
                         onValueChange = {},
                         label = { Text("Nome") },
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = false,  // ⬅️ Desabilitado
+                        enabled = false,  // Desabilitado
                         colors = OutlinedTextFieldDefaults.colors(
                             disabledBorderColor = Color.LightGray,
                             disabledTextColor = Color.DarkGray,
@@ -185,11 +180,11 @@ fun EditProfileScreen(
 
                     // IDADE
                     OutlinedTextField(
-                        value = age,
-                        onValueChange = {},
+                        value = idade,
+                        onValueChange = {if (it.all { c -> c.isDigit() }) idade = it},
                         label = { Text("Idade") },
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = false,  // ⬅️ Desabilitado
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         colors = OutlinedTextFieldDefaults.colors(
                             disabledBorderColor = Color.LightGray,
                             disabledTextColor = Color.DarkGray,
@@ -201,10 +196,9 @@ fun EditProfileScreen(
 
                     // EMAIL - mudavel
                     OutlinedTextField(
-                        value = email,
+                        value = email?: "",
                         onValueChange = {
                             email = it
-                            emailError = null
                         },
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
@@ -223,6 +217,98 @@ fun EditProfileScreen(
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = senha,
+                        onValueChange = {senha = it},
+                        label = { Text("Senha") },
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        isError = emailError != null,
+                        supportingText = {
+                            if (emailError != null) {
+                                Text(
+                                    text = emailError!!,
+                                    color = MaterialTheme.colorScheme.error,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        },
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Usa método contraceptivo?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Opção SIM
+                        RadioButton(
+                            selected = usaMetodo,
+                            onClick = { usaMetodo = true },
+                            colors = RadioButtonDefaults.colors(selectedColor = PinkButton)
+                        )
+                        Text("Sim", modifier = Modifier.clickable { usaMetodo = true })
+
+                        Spacer(modifier = Modifier.width(24.dp))
+
+                        // Opção NÃO
+                        RadioButton(
+                            selected = !usaMetodo,
+                            onClick = {
+                                usaMetodo = false
+                                tipoMetodo = "" // Limpa o tipo se marcar Não
+                            },
+                            colors = RadioButtonDefaults.colors(selectedColor = PinkButton)
+                        )
+                        Text("Não", modifier = Modifier.clickable { usaMetodo = false })
+                    }
+
+// APARECE APENAS SE FOR "SIM"
+                    if (usaMetodo) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = { expanded = !expanded }
+                        ) {
+                            OutlinedTextField(
+                                value = tipoMetodo,
+                                onValueChange = {},
+                                readOnly = true, // Usuária não digita, apenas seleciona
+                                label = { Text("Tipo de anticoncepcional") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = PinkButton,
+                                    focusedLabelColor = PinkButton
+                                )
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                opcoesAnticoncepcional.forEach { opcao ->
+                                    DropdownMenuItem(
+                                        text = { Text(opcao) },
+                                        onClick = {
+                                            tipoMetodo = opcao
+                                            expanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                     // TELEFONE
                     OutlinedTextField(
@@ -250,7 +336,7 @@ fun EditProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "Nome e idade não podem ser alterados",
+                            text = "Nome não pode ser alterados",
                             fontSize = 12.sp,
                             color = Color.Gray
                         )
@@ -259,7 +345,26 @@ fun EditProfileScreen(
                     Spacer(modifier = Modifier.height(3.dp))
 
                     Button(
-                        onClick = {/*salvar*/ },
+                        onClick = {val dadosParaAtualizar = ProfileRequest(
+                            user = UserData(
+                                    name = state?.user?.name ?: "", // Mantém o que já tinha
+                                    surname = state?.user?.surname ?: "", // Mantém o que já tinha
+                                    email = email?:"",
+                                    password = if (senha.isBlank()) "" else senha) ,
+                            search = SearchData( // Supondo que UserRegistre tenha um campo search
+                                    age = idade.toIntOrNull() ?: 0,
+                                    useContraceptive = usaMetodo,
+                                    contraceptiveType = if (usaMetodo) tipoMetodo else null)
+                            )
+
+                            // Agora passamos o objeto e a função de sucesso
+                            viewModel.updateUserProfile(
+                                userRegistre = dadosParaAtualizar,
+                                onSuccess = {
+                                    onBackClick()
+                                }
+                            )
+                        },
                         modifier = Modifier.size(width = 304.dp, height = 44.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = PinkButton),
                         shape = RoundedCornerShape(8.dp),
@@ -268,12 +373,11 @@ fun EditProfileScreen(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun EditProfileScreenPreview() {
@@ -285,4 +389,4 @@ fun EditProfileScreenPreview() {
             initialPhone = "(00) 0000-0000"
         )
     }
-}
+}*/

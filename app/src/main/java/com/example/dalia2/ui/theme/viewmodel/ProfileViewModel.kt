@@ -1,34 +1,27 @@
 package com.example.dalia2.ui.theme.viewmodel
 
-import com.example.dalia2.data.model.UserFullProfile
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dalia2.data.model.ProfileRequest
 import com.example.dalia2.data.repository.DaliaRepository
+import com.example.dalia2.data.session.UserSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-// Estado da UI para a tela
-data class ProfileUiState(
-    val name: String = "",
-    val email: String = "",
-    val age: String = "",
-    val phone: String = "",
-    val isPregnancyMode: Boolean = false
-)
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: DaliaRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ProfileUiState())
-    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+    var _uiState by mutableStateOf<ProfileRequest?>(null)
+
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -38,39 +31,33 @@ class ProfileViewModel @Inject constructor(
 
     fun loadUserProfile() {
         viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
-
-            // Agora chamamos a função que unifica user + search que vimos no Controller
-            val result = repository.getUserFullProfile()
-
-            result.onSuccess { profile ->
-                _uiState.update {
-                    it.copy(
-                        name = profile.name,
-                        email = profile.email,
-                        age = profile.age.toString(),
-                        phone = profile.phone,
-                        isPregnancyMode = profile.isPregnancyMode
-                    )
+            if(UserSession.profileCache == null){
+                _isLoading.value = true
+                val response = repository.getUserFullProfile()
+                if (response.isSuccess) {
+                    UserSession.profileCache = response.getOrNull()
+                    _uiState = UserSession.profileCache
                 }
-            }.onFailure { exception ->
-                _errorMessage.value = "Erro ao carregar perfil: ${exception.message}"
-                Log.e("ProfileVM", "Erro no carregamento", exception)
+                _isLoading.value = false
+            }else{
+                _uiState = UserSession.profileCache
             }
-
-            _isLoading.value = false
         }
     }
 
-    fun updateUserProfile(newEmail: String, newPhone: String) {
+    fun updateUserProfile(userRegistre : ProfileRequest, onSuccess: () ->Unit) {
         viewModelScope.launch {
-            _isLoading.value = true
-            // Por enquanto, atualizamos apenas localmente conforme sua decisão
-            _uiState.update {
-                it.copy(email = newEmail, phone = newPhone)
+            val response = repository.updatePerfil(userRegistre)
+            if (response.isSuccess) {
+                val updatedUser = response.getOrNull()
+
+                UserSession.profileCache = UserSession.profileCache?.copy(
+                    user = updatedUser!!
+                )
+
+                UserSession.profileCache = UserSession.profileCache
+                onSuccess()
             }
-            _isLoading.value = false
         }
     }
 }

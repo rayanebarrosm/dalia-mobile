@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.composable
@@ -16,6 +17,7 @@ import com.example.dalia2.ui.components.BottomNavigationBar
 import com.example.dalia2.ui.theme.screen.*
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
+import com.example.dalia2.ui.theme.viewmodel.ProfileViewModel
 import com.example.dalia2.ui.theme.viewmodel.QuizViewModel
 
 // implementar viewModel para o salvamento no banco de dados
@@ -188,25 +190,6 @@ fun AppNavigation() {
             }*/
         }
 
-
-        composable("profileScreen") {
-           ProfileScreen(
-            onEditarClick = {
-                navController.navigate("editProfileScreen")
-            },
-            onInformationClick ={
-                navController.navigate("informationScreen")
-            },
-            onHelpClick ={
-                navController.navigate("helpScreen")
-            },
-            onChangeModeClick ={
-                navController.navigate("Screen") //Vai ter que criar um view model para saber em qual modo está
-            }
-
-            )
-        }
-
         composable("forum") {
             ForumScreen(
                 viewModel = viewModelForum,
@@ -242,7 +225,15 @@ fun AppNavigation() {
 
 
         composable("editProfileScreen") {
-            RegisterScreen()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry("settings")
+            }
+            val viewModel: ProfileViewModel = hiltViewModel(parentEntry)
+            Log.d("EditProfileScreen", "passando aqui")
+            EditProfileScreen(
+                viewModel = viewModel,
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable("calendar") {
@@ -253,8 +244,23 @@ fun AppNavigation() {
             DaliaBotScreen()
         }
 
-        composable("settings") {
-            ProfileScreen()
+        composable("settings") {backStackEntry ->
+            val viewModel: ProfileViewModel = hiltViewModel(backStackEntry)
+            ProfileScreen(
+                viewModel = viewModel,
+                onEditarClick = {
+                    navController.navigate("editProfileScreen")
+                },
+                onInformationClick ={
+                    navController.navigate("informationScreen")
+                },
+                onHelpClick ={
+                    navController.navigate("helpScreen")
+                },
+                onChangeModeClick ={
+                    navController.navigate("Screen") //Vai ter que criar um view model para saber em qual modo está
+                }
+            )
         }
 
     }}
