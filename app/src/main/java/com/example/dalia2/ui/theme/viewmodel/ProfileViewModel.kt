@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dalia2.data.model.ProfileRequest
+import com.example.dalia2.data.model.ProfileResponse
 import com.example.dalia2.data.repository.DaliaRepository
 import com.example.dalia2.data.session.UserSession
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +21,7 @@ class ProfileViewModel @Inject constructor(
     private val repository: DaliaRepository
 ) : ViewModel() {
 
-    var _uiState by mutableStateOf<ProfileRequest?>(null)
-
+    var _uiState by mutableStateOf<ProfileResponse?>(null)
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -47,17 +47,15 @@ class ProfileViewModel @Inject constructor(
 
     fun updateUserProfile(userRegistre : ProfileRequest, onSuccess: () ->Unit) {
         viewModelScope.launch {
-            val response = repository.updatePerfil(userRegistre)
-            if (response.isSuccess) {
-                val updatedUser = response.getOrNull()
-
-                UserSession.profileCache = UserSession.profileCache?.copy(
-                    user = updatedUser!!
-                )
-
-                UserSession.profileCache = UserSession.profileCache
+            _isLoading.value = true
+            val result = repository.updatePerfil(userRegistre)
+            result.onSuccess { response ->
+            _uiState = response
                 onSuccess()
+            }.onFailure { error ->
+                _errorMessage.value = error.message
             }
+            _isLoading.value = false
         }
     }
 }

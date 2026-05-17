@@ -9,10 +9,10 @@ import com.example.dalia2.data.model.CycleData
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
 import com.example.dalia2.data.model.ProfileRequest
+import com.example.dalia2.data.model.ProfileResponse
 import com.example.dalia2.data.model.SearchRequest
 import com.example.dalia2.data.model.SearchResponse
 import com.example.dalia2.data.model.TokensResponse
-import com.example.dalia2.data.model.UserData
 import com.example.dalia2.data.model.UserRegistre
 import com.example.dalia2.data.model.UserResponse
 import com.example.dalia2.data.model.VerificationRequest
@@ -261,14 +261,14 @@ class DaliaRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserFullProfile(): Result<ProfileRequest> {
+    suspend fun getUserFullProfile(): Result<ProfileResponse> {
         UserSession.profileCache?.let {
             return Result.success(it)
         }
         return try {
             val response = api.getPerfil()
             if (response.isSuccessful) {
-                val body:  ProfileRequest? = response.body()
+                val body:  ProfileResponse? = response.body()
                 if (body != null) {
                     val data = response.body()!!
                     UserSession.profileCache = data
@@ -283,18 +283,11 @@ class DaliaRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    suspend fun updatePerfil(userDto: ProfileRequest): Result<UserData> {
+    suspend fun updatePerfil(userDto: ProfileRequest): Result<ProfileResponse> {
         return try {
             val response = api.updatePerfil(userDto)
             if (response.isSuccessful && response.body() != null) {
-                val updatedUser = response.body()!!
-
-                // 3. ATUALIZAÇÃO DO CONTEXTO: Sincroniza o cache com a nova info
-                UserSession.profileCache = UserSession.profileCache?.copy(
-                    user = updatedUser
-                )
-
-                Result.success(updatedUser)
+                Result.success(response.body()!!)
             } else {
                 Result.failure(Exception("Erro ao atualizar"))
             }

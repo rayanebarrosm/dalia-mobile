@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dalia2.R
 import com.example.dalia2.data.model.ProfileRequest
 import com.example.dalia2.data.model.SearchData
-import com.example.dalia2.data.model.UserData
+import com.example.dalia2.data.model.UserRequest
 import com.example.dalia2.ui.theme.Black
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.White
@@ -345,16 +345,19 @@ fun EditProfileScreen(
                     Spacer(modifier = Modifier.height(3.dp))
 
                     Button(
-                        onClick = {val dadosParaAtualizar = ProfileRequest(
-                            user = UserData(
-                                    name = state?.user?.name ?: "", // Mantém o que já tinha
-                                    surname = state?.user?.surname ?: "", // Mantém o que já tinha
-                                    email = email?:"",
-                                    password = if (senha.isBlank()) "" else senha) ,
-                            search = SearchData( // Supondo que UserRegistre tenha um campo search
-                                    age = idade.toIntOrNull() ?: 0,
-                                    useContraceptive = usaMetodo,
-                                    contraceptiveType = if (usaMetodo) tipoMetodo else null)
+                        onClick = {
+                            var search = SearchData( // Supondo que UserRegistre tenha um campo search
+                                age = idade.toIntOrNull() ?: 0,
+                                useContraceptive = usaMetodo,
+                                contraceptiveType = if (usaMetodo) tipoMetodo else null
+                            )
+
+                            val dadosParaAtualizar = ProfileRequest(
+                                name = state?.user?.name ?: "",
+                                surname = state?.user?.surname ?: "",
+                                email = email?:"",
+                                password = if (senha.isBlank()) null else senha,
+                                search = search
                             )
 
                             // Agora passamos o objeto e a função de sucesso

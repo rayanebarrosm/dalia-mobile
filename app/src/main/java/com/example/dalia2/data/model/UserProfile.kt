@@ -1,19 +1,26 @@
 package com.example.dalia2.data.model
 
-data class ProfileRequest(
-    val user: UserData,
+data class ProfileResponse(
+    val user: UserRequest,
     val search: SearchData?
 )
-
-data class UserData(
-    val name: String,
-    val surname: String,
+data class UserRequest(
+    val name: String?,
+    val surname: String?,
     val email: String?,
-    val password: String?
+    val password: String? = null
 )
 
 data class SearchData(
     var age: Int,
     var useContraceptive: Boolean,
     var contraceptiveType: String?
+)
+
+data class ProfileRequest(
+    val name: String?,
+    val surname: String?,
+    val email: String?,
+    val password: String? = null,
+    val search: SearchData?
 )

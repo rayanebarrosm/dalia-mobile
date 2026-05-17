@@ -91,10 +91,10 @@ interface ApiService {
     //PERFIL
     @GET("api/perfil/perfilView")
     suspend fun getPerfil(
-    ): Response<ProfileRequest>
+    ): Response<ProfileResponse>
 
     @PUT("api/perfil/updatePerfil")
     suspend fun updatePerfil(
         @Body userRegistre: ProfileRequest
-    ): Response<UserData>
+    ): Response<ProfileResponse>
 }
