@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.room.ktx)
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     implementation("com.google.accompanist:accompanist-permissions:0.37.3") // gerenciador de permissões
     implementation ("androidx.core:core-splashscreen:1.0.0")
@@ -85,4 +86,5 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }

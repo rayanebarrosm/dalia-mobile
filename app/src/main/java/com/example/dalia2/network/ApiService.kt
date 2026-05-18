@@ -1,6 +1,7 @@
 package com.example.dalia2.network
 
 import com.example.dalia2.data.model.*
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -97,4 +98,10 @@ interface ApiService {
     suspend fun updatePerfil(
         @Body userRegistre: ProfileRequest
     ): Response<ProfileResponse>
+
+    //PEDIDO DE AJUDA
+    @POST("api/reports/enviar-denuncia")
+    suspend fun needHelp(
+        @Body message: RequestBody
+    ): Response<DenunciaResponse>
 }

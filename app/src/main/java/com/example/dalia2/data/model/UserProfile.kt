@@ -24,3 +24,8 @@ data class ProfileRequest(
     val password: String? = null,
     val search: SearchData?
 )
+
+data class DenunciaResponse(
+    val status: String,
+    val message: String
+)

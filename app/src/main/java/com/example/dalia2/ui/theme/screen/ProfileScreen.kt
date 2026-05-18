@@ -1,5 +1,20 @@
 package com.example.dalia2.ui.theme.screen
 
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.widget.Toast
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.LocationServices
+import java.util.Locale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
@@ -11,14 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import android.content.Intent
@@ -26,15 +38,13 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.foundation.verticalScroll
 import com.example.dalia2.R
 import com.example.dalia2.ui.theme.Dalia2Theme
 import com.example.dalia2.ui.theme.GrayButton
 import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.LightPink
 import com.example.dalia2.ui.theme.viewmodel.ProfileViewModel
-
-
 data class LanguageOption(
     val code: String?,
     val name: String
@@ -48,12 +58,20 @@ fun ProfileScreen(
     onInformationClick: () -> Unit = {},
     onHelpClick: () -> Unit = {},
     onChangeModeClick: () -> Unit = {},
+    onBackClick: () -> Unit = {}
 ) {
 
     val state = viewModel._uiState
     val isLoading by viewModel.isLoading.collectAsState()
 
     val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+
+
+    val nomeCompleto = "${state?.user?.name ?: ""} ${state?.user?.surname ?: ""}".trim()
+    val telefoneUsuario =
+        state?.user?.email ?: "Não informado" // Adapte para state?.user?.telefone se houver
+
     var showModeDialog by remember { mutableStateOf(false) }
     var isPregnancyMode by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
@@ -78,16 +96,58 @@ fun ProfileScreen(
     ) {
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            fun sendMsg() {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                        if (location != null) {
+                            val geocoder = Geocoder(context, Locale.getDefault())
+                            val addresses =
+                                geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+                            val enderecoCompleto = if (!addresses.isNullOrEmpty()) {
+                                addresses[0].getAddressLine(0)
+                            } else {
+                                "Latiude: ${location.latitude}, Longitude: ${location.longitude}"
+                            }
+
+                            val mensagemFinal =
+                                "Usuaria $nomeCompleto, numero: $telefoneUsuario, está em: $enderecoCompleto"
+
+                            viewModel.enviarDenuncia(mensagemFinal) {
+                                Toast.makeText(context, "Ajuda solicitada", Toast.LENGTH_LONG)
+                                    .show()
+                                onBackClick()
+                            }
+                        } else {
+                            Toast.makeText(context, "Permissão negada", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, "Permissão negada", Toast.LENGTH_LONG).show()
+                }
+            }
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            Text(text = "Perfil",
+            Text(
+                text = "Perfil",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 24.sp
-                );
+            );
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -123,17 +183,22 @@ fun ProfileScreen(
 
                 ) {
 
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                    ){
-                        Text(text = "Informações", fontSize = 20.sp,  fontWeight = FontWeight.SemiBold);
+                    ) {
+                        Text(
+                            text = "Informações",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        );
 
                         Button(
                             onClick = {
-                                Log.d("TESTE","botão editar clicado")
-                                onEditarClick()},
+                                Log.d("TESTE", "botão editar clicado")
+                                onEditarClick()
+                            },
                             colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
                         ) {
                             Text("Editar", color = Color.Black)
@@ -149,7 +214,8 @@ fun ProfileScreen(
 
                     InfoSection(
                         label = "Email",
-                        value = state?.user?.email?.ifBlank { "Carregando..." } ?: ""  //dado do banco de dados
+                        value = state?.user?.email?.ifBlank { "Carregando..." }
+                            ?: ""  //dado do banco de dados
                     );
 
                     InfoSection(
@@ -161,7 +227,7 @@ fun ProfileScreen(
                         label = "Anticoncepcional",
                         value = if (state?.search?.useContraceptive ?: true) "Sim" else "Não"
                     )
-                    if(state?.search?.useContraceptive ?: true) {
+                    if (state?.search?.useContraceptive ?: true) {
                         InfoSection(
                             label = "Tipo de Anticoncepcional",
                             value = state?.search?.contraceptiveType ?: ""
@@ -185,10 +251,10 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
 
-                    SettingsButton (
+                    SettingsButton(
                         text = "Idioma",
                         icon = R.drawable.idioma_icon,
                         onClick = {
@@ -199,16 +265,17 @@ fun ProfileScreen(
                                 context.startActivity(intent)
                             } else {
                                 // Versões anteriores do Android
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    data = Uri.fromParts("package", context.packageName, null)
-                                }
+                                val intent =
+                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = Uri.fromParts("package", context.packageName, null)
+                                    }
                                 context.startActivity(intent)
                             }
                         },
                         backgroundColor = LightPink
                     )
 
-                    SettingsButton (
+                    SettingsButton(
                         text = "Informações pessoais",
                         icon = R.drawable.person,
                         onClick = onInformationClick,
@@ -216,7 +283,7 @@ fun ProfileScreen(
 
                     )
 
-                    SettingsButton (
+                    SettingsButton(
                         text = "Ajuda",
                         icon = R.drawable.search_icon,
                         onClick = onHelpClick,
@@ -225,11 +292,13 @@ fun ProfileScreen(
 
                     Button(
                         onClick = { },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = PinkButton
                         )
-                    ){
+                    ) {
                         Text("Mudar para modo gravidez")
                     }
                 }
@@ -242,14 +311,13 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
-                colors = CardDefaults.cardColors( containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = Color.White)
 
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
-                    ,
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
                 ) {
                     Text(
                         text = "Zona de perigo!",
@@ -264,13 +332,13 @@ fun ProfileScreen(
                         text = "Denunciar",
                         icon = R.drawable.alert,
                         backgroundColor = PinkButton,
-                        onClick = { /* Denunciar */ },
+                        onClick = { showReportDialog = true },
                     )
 
                     Button(
                         onClick = { /* Excluir conta */ },
                         modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors( containerColor = PinkButton)
+                        colors = ButtonDefaults.buttonColors(containerColor = PinkButton)
                     ) {
                         Text("Sair da conta")
                     }
@@ -283,7 +351,7 @@ fun ProfileScreen(
                     onDismissRequest = { showModeDialog = false },
                     icon = {
                         Icon(
-                            painter =   painterResource(
+                            painter = painterResource(
                                 id = if (isPregnancyMode) R.drawable.pop_heartcalendar else R.drawable.pop_pregnance
                             ),
                             contentDescription = null,
@@ -313,7 +381,7 @@ fun ProfileScreen(
             }
 
             //Pop-up - Denunciar
-            if(showReportDialog){
+            if (showReportDialog) {
                 AlertDialog(
                     onDismissRequest = { showReportDialog = false },
                     title = { Text("Atenção") },
@@ -323,6 +391,8 @@ fun ProfileScreen(
                     confirmButton = {
                         TextButton(onClick = {
                             showReportDialog = false
+                            Log.d("TESTE", "botão confirmar clicado")
+                            sendMsg()
                         }) {
                             Text("Sim", color = PinkButton, fontWeight = FontWeight.Bold)
                         }
@@ -340,17 +410,15 @@ fun ProfileScreen(
     }
 }
 
-
 @Composable
 fun InfoSection(
     label: String,
     value: String
-){
+) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)
-
+           .fillMaxWidth()
+           .padding(vertical = 12.dp)
     ) {
         Text(
             text = label,
@@ -366,6 +434,7 @@ fun InfoSection(
         )
     }
 }
+
 
 @Composable
 fun SettingsButton(
@@ -406,13 +475,10 @@ fun SettingsButton(
     }
 }
 
-@Preview(
-    widthDp = 500,
-    heightDp = 1000
-)
 @Composable
 fun ProfileScreenPreview() {
     Dalia2Theme {
         //ProfileScreen()
     }
 }
+

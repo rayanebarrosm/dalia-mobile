@@ -6,6 +6,7 @@ import com.example.dalia2.data.local.CicloDao
 import com.example.dalia2.data.local.CicloEntity
 import com.example.dalia2.data.model.Comments
 import com.example.dalia2.data.model.CycleData
+import com.example.dalia2.data.model.DenunciaResponse
 import com.example.dalia2.data.model.LoginRequest
 import com.example.dalia2.data.model.Posts
 import com.example.dalia2.data.model.ProfileRequest
@@ -18,6 +19,7 @@ import com.example.dalia2.data.model.UserResponse
 import com.example.dalia2.data.model.VerificationRequest
 import com.example.dalia2.data.session.UserSession
 import com.example.dalia2.network.ApiService
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class DaliaRepository @Inject constructor(
@@ -292,6 +294,25 @@ class DaliaRepository @Inject constructor(
                 Result.failure(Exception("Erro ao atualizar"))
             }
         } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun needHelp(message: RequestBody): Result<DenunciaResponse>{
+        return try {
+            val response = api.needHelp(message)
+            if(response.isSuccessful){
+                Log.d("REPO_SUCESS", "deu certo")
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.success(responseBody)
+                } else {
+                    // Caso o corpo venha vazio por algum motivo, não deixamos quebrar
+                    Result.success(DenunciaResponse(status = "success", message = "Ajuda solicitada com sucesso!"))
+                }            } else {
+               Result.failure(Exception("falha ao enviar mensagem"))
+            }
+        }catch(e: Exception){
+            Log.d("REPO_EXCEPTION", "Falha catastrófica", e)
             Result.failure(e)
         }
     }

@@ -1,5 +1,6 @@
 package com.example.dalia2.ui.theme.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,6 +57,22 @@ class ProfileViewModel @Inject constructor(
                 onSuccess()
             }.onFailure { error ->
                 _errorMessage.value = error.message
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun enviarDenuncia(mensagem: String, onSuccess: () -> Unit){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val body = RequestBody.create("text/plain".toMediaTypeOrNull(), mensagem)
+            val result = repository.needHelp(body)
+            result.onSuccess {
+                onSuccess()
+            }.onFailure { error ->
+                Log.d("API_ERROR", "Erro enviar denuncia: ${error.message}")
+                _errorMessage.value = error.message
+
             }
             _isLoading.value = false
         }
