@@ -434,29 +434,32 @@ fun NewsCarousel(
     cardColor: Color,
     newsType: String
 ) {
+
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     data class NewsItem(
         val id: Int,
         val imageResId: Int,
         val title: String,
-        val description: String
+        val description: String,
+        val url: String
     )
 
     val newsItems = remember(newsType) {
         if (newsType == "saude") {
             listOf(
-                NewsItem(0, R.drawable.lotus, "Como melhorar sua saúde mental", "Dicas simples para o dia a dia que podem transformar sua vida."),
-                NewsItem(1, R.drawable.lotus, "Benefícios da atividade física", "Descubra como pequenos movimentos fazem diferença."),
-                NewsItem(2, R.drawable.lotus, "Alimentação saudável na rotina", "Receitas fáceis e nutritivas para o seu dia."),
-                NewsItem(3, R.drawable.lotus, "Sono reparador: guia completo", "Técnicas para melhorar sua qualidade de sono."),
-                NewsItem(4, R.drawable.lotus, "Prevenção é o melhor caminho", "Exames e cuidados que você não pode ignorar.")
+                NewsItem(0, R.drawable.lotus, "Como melhorar sua saúde mental", "Dicas simples para o dia a dia que podem transformar sua vida.", "https://helloclue.com/pt/artigos/emocoes/alteracoes-de-humor-e-o-ciclo-menstrual-tpm-e-tdpm"),
+                NewsItem(1, R.drawable.lotus, "Benefícios da atividade física", "Descubra como pequenos movimentos fazem diferença.", "https://korui.com.br/blogs/news/exercicio-fisico-e-as-fases-do-ciclo-menstrual-adapte-seu-treino?gad_source=1&gad_campaignid=23791972702&gbraid=0AAAAACEab0U9stZyfSuYrujKf6hrfMjQP&gclid=CjwKCAjwidXQBhAZEiwA4egw6Eo2Y3s5AN5Q8bUT5QjFeQMbLqiNSHrWTZRYf7Ro4r5xukyu0cbY6BoC7UoQAvD_BwE"),
+                NewsItem(2, R.drawable.lotus, "Alimentação saudável na rotina", "Receitas fáceis e nutritivas para o seu dia.","https://nutrium.com/blog/pt-br/o-ciclo-menstrual-como-se-alimentar-de-acordo-com-ele/"),
+                NewsItem(3, R.drawable.lotus, "Sono reparador: guia completo", "Técnicas para melhorar sua qualidade de sono.","https://www.saudemental.ufscar.br/pt-br/orientacoes/como-melhorar-a-qualidade-do-sono"),
+                NewsItem(4, R.drawable.lotus, "Prevenção é o melhor caminho", "Exames e cuidados que você não pode ignorar.","https://www.goldenclinic.com.br/blog/item/72-a-import%C3%A2ncia-da-consulta-ginecol%C3%B3gica")
             )
         } else {
             listOf(
-                NewsItem(0, R.drawable.lotus, "Nova lei de saúde pública", "Entenda como a nova legislação impacta seu dia a dia."),
-                NewsItem(1, R.drawable.lotus, "Direitos das gestantes", "Conheça seus direitos e benefícios durante a gestação."),
-                NewsItem(2, R.drawable.lotus, "Atualizações no SUS", "Saiba o que mudou no sistema público de saúde."),
-                NewsItem(3, R.drawable.lotus, "Telemedicina: o que diz a lei", "Regulamentações e permissões para consultas remotas."),
-                NewsItem(4, R.drawable.lotus, "Programas de saúde preventiva", "Legislação sobre campanhas de prevenção.")
+                NewsItem(0, R.drawable.lotus, "Nova lei de saúde pública", "Entenda como a nova legislação impacta seu dia a dia.", "https://www.planalto.gov.br/ccivil_03/leis/l8080.htm"),
+                NewsItem(1, R.drawable.lotus, "Direitos das gestantes", "Conheça seus direitos e benefícios durante a gestação.", "https://www.gov.br/mdh/pt-br/assuntos/noticias/2023/maio/voce-conhece-os-direitos-das-gestantes-confira-os-principais-mecanismos-de-protecao"),
+                NewsItem(2, R.drawable.lotus, "Atualizações no SUS", "Saiba o que mudou no sistema público de saúde.", "https://www.gov.br/saude/pt-br"),
+                NewsItem(3, R.drawable.lotus, "Telemedicina: o que diz a lei", "Regulamentações e permissões para consultas remotas.", "https://www.in.gov.br/en/web/dou/-/lei-n-14.510-de-27-de-dezembro-de-2022-453982424"),
+                NewsItem(4, R.drawable.lotus, "Leis de proteção à mulher", "Legislação e segurança jurídica sobre campanhas de prevenção.", "https://www.institutomariadanapenha.org.br/lei-maria-da-penha.html")
             )
         }
     }
@@ -472,7 +475,13 @@ fun NewsCarousel(
                 title = item.title,
                 description = item.description,
                 cardColor = cardColor,
-                onClick = { /* Navegar para detalhes */ }
+                onClick = {
+                    try {
+                        uriHandler.openUri(item.url)
+                    } catch (e: Exception) {
+                        android.util.Log.e("NAV_ERROR", "Não foi possível abrir a URL: ${item.url}", e)
+                    }
+                }
             )
         }
     }

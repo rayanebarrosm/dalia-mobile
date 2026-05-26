@@ -62,7 +62,6 @@ fun ProfileScreen(
 ) {
 
     val state = viewModel._uiState
-    val isLoading by viewModel.isLoading.collectAsState()
 
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -403,6 +402,15 @@ fun ProfileScreen(
                         }
                     }
                 )
+            }
+            if(viewModel.isLoading){
+                Surface(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = PinkButton)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))

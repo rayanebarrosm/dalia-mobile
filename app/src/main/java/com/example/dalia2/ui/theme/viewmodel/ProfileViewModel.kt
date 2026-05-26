@@ -26,22 +26,21 @@ class ProfileViewModel @Inject constructor(
 
     var _uiState by mutableStateOf<ProfileResponse?>(null)
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
+    var isLoading by mutableStateOf(false)
+        private set
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     fun loadUserProfile() {
         viewModelScope.launch {
             if(UserSession.profileCache == null){
-                _isLoading.value = true
+                isLoading = true
                 val response = repository.getUserFullProfile()
                 if (response.isSuccess) {
                     UserSession.profileCache = response.getOrNull()
                     _uiState = UserSession.profileCache
                 }
-                _isLoading.value = false
+                isLoading = false
             }else{
                 _uiState = UserSession.profileCache
             }
@@ -50,7 +49,7 @@ class ProfileViewModel @Inject constructor(
 
     fun updateUserProfile(userRegistre : ProfileRequest, onSuccess: () ->Unit) {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoading = true
             val result = repository.updatePerfil(userRegistre)
             result.onSuccess { response ->
             _uiState = response
@@ -58,13 +57,13 @@ class ProfileViewModel @Inject constructor(
             }.onFailure { error ->
                 _errorMessage.value = error.message
             }
-            _isLoading.value = false
+            isLoading = false
         }
     }
 
     fun enviarDenuncia(mensagem: String, onSuccess: () -> Unit){
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoading = true
             val body = RequestBody.create("text/plain".toMediaTypeOrNull(), mensagem)
             val result = repository.needHelp(body)
             result.onSuccess {
@@ -74,7 +73,7 @@ class ProfileViewModel @Inject constructor(
                 _errorMessage.value = error.message
 
             }
-            _isLoading.value = false
+            isLoading = false
         }
     }
 }
