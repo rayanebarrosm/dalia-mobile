@@ -27,6 +27,9 @@ class CalendarViewModel @Inject constructor(
     var cycleData by mutableStateOf<CycleData?>(null)
         private set
 
+    private var diasOvulacaoAcumulados = listOf<LocalDate>()
+
+
     private val _diasMenstruacao = MutableStateFlow<List<LocalDate>>(emptyList())
     val diasMenstruacao = _diasMenstruacao.asStateFlow()
 
@@ -82,7 +85,68 @@ class CalendarViewModel @Inject constructor(
             }
         }
     }
+
     private fun listarDatas(cycleData: CycleData?) {
+        if (cycleData == null) return
+
+        val listMenstruacao = mutableListOf<LocalDate>()
+        val listFertil = mutableListOf<LocalDate>()
+        val listOvulacao = mutableListOf<LocalDate>()
+
+        val duracaoCiclo = if (cycleData.maxCycleDuration > 0) cycleData.maxCycleDuration else 28
+
+
+        for (i in 0..2) {
+            val diasAAdicionar = (duracaoCiclo * i).toLong()
+
+            val inicioM = cycleData.lastMenstruationDay.plusDays(diasAAdicionar)
+            var fimM = cycleData.fimMenstruacao.plusDays(diasAAdicionar)
+
+            if (fimM.isBefore(inicioM)) {
+                fimM = inicioM.plusDays(4)
+            }
+
+            val inicioF = cycleData.inicioPeriodoFertil.plusDays(diasAAdicionar)
+            val fimF = cycleData.fimPeriodoFertil.plusDays(diasAAdicionar)
+            val diaO = cycleData.diaOvulacao?.plusDays(diasAAdicionar)
+
+            listMenstruacao.addAll(gerarListaDatas(inicioM, fimM))
+            listFertil.addAll(gerarListaDatas(inicioF, fimF))
+            if (diaO != null) {
+                listOvulacao.add(diaO)
+            }
+        }
+
+        // Atualiza as Threads seguras da UI com os 3 meses calculados!
+        _diasMenstruacao.value = listMenstruacao
+        _diasFertil.value = listFertil
+
+        _diaOvulacao.value = cycleData.diaOvulacao
+
+        // Salvamos a lista completa de ovulações estendida em uma variável interna para o clique do dia funcionar
+        diasOvulacaoAcumulados = listOvulacao
+    }
+
+
+    fun getStatusDoDia(data: LocalDate): String {
+        return when {
+            _diasMenstruacao.value.contains(data) -> "MENSTRUAÇÃO"
+            diasOvulacaoAcumulados.contains(data) -> "OVULAÇÃO"
+            _diasFertil.value.contains(data) -> "PERIODO FERTIL"
+            else -> ""
+        }
+    }
+
+    private fun gerarListaDatas(inicio: LocalDate, fim: LocalDate): List<LocalDate> {
+        val datas = mutableListOf<LocalDate>()
+        var atual = inicio
+        while (!atual.isAfter(fim)) {
+            datas.add(atual)
+            atual = atual.plusDays(1)
+        }
+        return datas
+    }
+   /* private fun listarDatas(cycleData: CycleData?) {
         if (cycleData == null) return
         val inicioM = cycleData.lastMenstruationDay
         var fimM = cycleData.fimMenstruacao
@@ -114,5 +178,5 @@ class CalendarViewModel @Inject constructor(
             _diasFertil.value.contains(data) -> "PERIODO FERTIL"
             else -> ""
         }
-    }
+    }*/
 }
