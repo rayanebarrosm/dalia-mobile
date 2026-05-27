@@ -254,27 +254,6 @@ fun ProfileScreen(
                 ) {
 
                     SettingsButton(
-                        text = "Idioma",
-                        icon = R.drawable.idioma_icon,
-                        onClick = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
-                                    data = Uri.fromParts("package", context.packageName, null)
-                                }
-                                context.startActivity(intent)
-                            } else {
-                                // Versões anteriores do Android
-                                val intent =
-                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = Uri.fromParts("package", context.packageName, null)
-                                    }
-                                context.startActivity(intent)
-                            }
-                        },
-                        backgroundColor = LightPink
-                    )
-
-                    SettingsButton(
                         text = "Informações pessoais",
                         icon = R.drawable.person,
                         onClick = onInformationClick,

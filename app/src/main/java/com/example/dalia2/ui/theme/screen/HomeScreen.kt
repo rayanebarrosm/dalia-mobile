@@ -52,6 +52,7 @@ import com.example.dalia2.ui.theme.BlueButton
 import com.example.dalia2.ui.theme.White
 import com.example.dalia2.ui.theme.viewmodel.CalendarViewModel
 import com.example.dalia2.ui.theme.viewmodel.ForumViewModel
+import com.example.dalia2.ui.theme.Black
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 
@@ -92,8 +93,8 @@ fun HomeScreen(
 
    val itensCarrossel = remember {
        listOf(
-           MeuItem(1, "Ontem", ontem.toString()),
-           MeuItem(2, "Hoje", hoje.toString()),
+           MeuItem(1, "Ontem", ontem.toString(), destination = "calendar"),
+           MeuItem(2, "Hoje", hoje.toString(), destination = "register"),
            MeuItem(3, "Amanhã", amanha.toString())
        )
    }
@@ -107,7 +108,8 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .verticalScroll(scrollState)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Seção dos dias
         Box(
@@ -153,15 +155,6 @@ fun HomeScreen(
                 )
             }
         }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Notícias sobre saúde",
@@ -231,7 +224,6 @@ fun HomeScreen(
             }*/
 
             Spacer(modifier = Modifier.height(32.dp))
-        }
     }
 }
 
@@ -293,7 +285,7 @@ fun DayCarousel(
                 if (status.isNotEmpty()) {
                     Text(text = status, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 } else if (isSelected && item.titulo == "Hoje") {
-                    Text(text = "Como você está?", fontSize = 11.sp)
+                    Text(text = "Como você está?", fontSize = 11.sp, color = Black)
                 }
             }
         }
