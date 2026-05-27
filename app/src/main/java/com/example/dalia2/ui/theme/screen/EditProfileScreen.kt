@@ -336,7 +336,7 @@ fun EditProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "Nome não pode ser alterados",
+                            text = "Nome não pode ser alterado",
                             fontSize = 12.sp,
                             color = Color.Gray
                         )
