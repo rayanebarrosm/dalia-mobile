@@ -219,10 +219,25 @@ fun AppNavigation() {
             )
         }
 
-        composable("informationScreen") {
-            RegisterScreen()
+        composable("calendar") {
+            CalendarScreen()
         }
 
+        composable("bot") {
+            DaliaBotScreen()
+        }
+
+        composable("informationScreen") {
+            InformationScreen()
+        }
+
+        composable("helpScreen") {
+            HelpScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
 
         composable("editProfileScreen") {
             val parentEntry = remember(it) {
@@ -234,14 +249,6 @@ fun AppNavigation() {
                 viewModel = viewModel,
                 onBackClick = { navController.popBackStack() }
             )
-        }
-
-        composable("calendar") {
-            CalendarScreen()
-        }
-
-        composable("bot") {
-            DaliaBotScreen()
         }
 
         composable("settings") {backStackEntry ->

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -29,6 +30,7 @@ import com.example.dalia2.ui.theme.PinkButton
 fun RegisterScreen(
     onNextClick: () -> Unit = {}
 ) {
+    val scrollState = rememberScrollState()
     // Usando Surface para garantir que o fundo seja renderizado
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -37,7 +39,8 @@ fun RegisterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
+            .verticalScroll(scrollState)
+            .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))

@@ -156,11 +156,13 @@ fun HomeScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(40.dp))
+
             Text(
                 text = "Notícias sobre saúde",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 
@@ -184,7 +186,7 @@ fun HomeScreen(
                 text = "Notícias sobre legislação",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 

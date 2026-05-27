@@ -54,45 +54,6 @@ fun DaliaBotScreen() {
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Ícone do Bot
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.flower_nav),
-                    contentDescription = "Dália Bot",
-                    modifier = Modifier.size(60.dp),
-                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Título
-            Text(
-                text = "Daisy",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Sua assistente virtual de saúde feminina",
-                fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Card "Em breve"
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,10 +76,12 @@ fun DaliaBotScreen() {
                             .background(PinkButton.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "✨",
-                            fontSize = 40.sp
-                        )
+                            Image(
+                                painter = painterResource(id = R.drawable.flower_nav),
+                                contentDescription = "Dália Bot",
+                                modifier = Modifier.size(60.dp),
+                                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.Black)
+                            )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
