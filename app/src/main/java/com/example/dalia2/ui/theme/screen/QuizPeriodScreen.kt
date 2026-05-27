@@ -49,6 +49,7 @@ import com.example.dalia2.ui.theme.PinkButton
 import com.example.dalia2.ui.theme.viewmodel.QuizViewModel
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
@@ -128,6 +129,7 @@ fun QuizPeriodScreen(
                     proximaPergunta(
                         lista = perguntas,
                         atual = indiceAtual,
+                        valorSelecionado = valor,
                         atualizarIndice = { indiceAtual = it },
                         finalizou = {
                         viewModel.onQuizFinish() // Chama o salvamento
@@ -140,6 +142,7 @@ fun QuizPeriodScreen(
                     viewModel.atualizarDadosQuiz(perguntaAtual.campo, data)
                     proximaPergunta(lista = perguntas,
                         atual = indiceAtual,
+                        valorSelecionado = data,
                         atualizarIndice = { indiceAtual = it },
                         finalizou = {
                             viewModel.onQuizFinish() // Chama o salvamento
@@ -152,6 +155,7 @@ fun QuizPeriodScreen(
                     viewModel.atualizarDadosQuiz(perguntaAtual.campo, valor)
                     proximaPergunta(lista = perguntas,
                         atual = indiceAtual,
+                        valorSelecionado = valor,
                         atualizarIndice = { indiceAtual = it },
                         finalizou = {
                             viewModel.onQuizFinish() // Chama o salvamento
@@ -278,18 +282,29 @@ fun CampoNumero(
     }
 }
 
-fun proximaPergunta(lista: List<Pergunta>, atual: Int, atualizarIndice: (Int) -> Unit, finalizou: () -> Unit) {
-    if (atual < lista.size - 1) {
-        atualizarIndice(atual + 1)
+fun proximaPergunta(lista: List<Pergunta>, atual: Int, valorSelecionado: Any, atualizarIndice: (Int) -> Unit, finalizou: () -> Unit) {
+
+    val perguntaAtual = lista[atual]
+    if(perguntaAtual.campo == "contraceptivo" && valorSelecionado == false){
+        if (atual + 2 < lista.size) {
+            atualizarIndice(atual + 2)
+        } else {
+            finalizou()
+        }
     } else {
-        finalizou()
+        if (atual < lista.size - 1) {
+            atualizarIndice(atual + 1)
+        } else {
+            finalizou()
+        }
     }
+
 }
 
 fun formatarData(millis: Long?): String {
     if (millis == null) return ""
     val data = Instant.ofEpochMilli(millis)
-        .atZone(ZoneId.systemDefault())
+        .atZone(ZoneOffset.UTC)
         .toLocalDate()
 
     // Formato padrão para APIs: AAAA-MM-DD
