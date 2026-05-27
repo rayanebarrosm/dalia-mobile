@@ -40,8 +40,8 @@ interface ApiService {
     ): Call<TokensResponse>
 
     @Headers("Content-Type: application/json",
-    "Accept: */*",
-    "User-Agent: PostmanRuntime/7.41.1")
+        "Accept: */*",
+        "User-Agent: PostmanRuntime/7.41.1")
     @POST("/api/user/search")
     suspend fun search(
         @Body request: SearchRequest

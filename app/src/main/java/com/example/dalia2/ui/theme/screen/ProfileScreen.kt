@@ -1,6 +1,5 @@
 package com.example.dalia2.ui.theme.screen
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -404,8 +403,8 @@ fun InfoSection(
 ) {
     Column(
         modifier = Modifier
-           .fillMaxWidth()
-           .padding(vertical = 12.dp)
+            .fillMaxWidth()
+            .padding(vertical = 12.dp)
     ) {
         Text(
             text = label,
@@ -468,4 +467,3 @@ fun ProfileScreenPreview() {
         //ProfileScreen()
     }
 }
-
